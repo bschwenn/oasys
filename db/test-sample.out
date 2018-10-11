@@ -1,0 +1,81 @@
+-- Get a user's basic info
+SELECT *
+FROM Person
+WHERE uid = 1; -- 1 can be an interpolated parameter in app code
+ uid |   name    |    email    | graduation_year |     photo_path      | links 
+-----+-----------+-------------+-----------------+---------------------+-------
+   1 | Alex Boid | ab@duke.edu |            2019 | /var/media/1234.png | {}
+(1 row)
+
+-- Get a user's interests
+SELECT Interest.name
+FROM Person, Interest, Interested
+WHERE Person.uid = 1
+AND Person.uid = Interested.uid
+AND Interest.iid = Interested.iid;
+       name       
+------------------
+ Databases
+ Machine Learning
+ Politics
+(3 rows)
+
+-- Get a user's majors
+SELECT Interest.name
+FROM Person, Interest, Studies
+WHERE Person.uid = 1
+AND Person.uid = Studies.uid
+AND Interest.iid = Studies.iid
+AND Studies.kind = 'major';
+       name        
+-------------------
+ Political Science
+(1 row)
+
+-- Get a user's minors
+SELECT Interest.name
+FROM Person, Interest, Studies
+WHERE Person.uid = 1
+AND Person.uid = Studies.uid
+AND Interest.iid = Studies.iid
+AND Studies.kind = 'minor';
+       name       
+------------------
+ Computer Science
+(1 row)
+
+-- Data to populate a group's (flock's) profile info
+SELECT *
+FROM Flock
+WHERE gid = 1;
+ gid |  name  |     photo_path      
+-----+--------+---------------------
+   1 | CS 316 | /var/media/1357.png
+(1 row)
+
+-- Data to populate a group's feed
+SELECT *
+FROM Post
+WHERE gid = 1;
+ pid | gid | creater_uid | timestamp | kind | body 
+-----+-----+-------------+-----------+------+------
+(0 rows)
+
+-- Data to populate an event's page summary
+SELECT *
+FROM Event
+WHERE eid = 1;
+ eid |   name    |            time            | location | create_uid |         summary         
+-----+-----------+----------------------------+----------+------------+-------------------------
+   1 | CS Fiesta | 2018-10-11 18:57:53.247026 | LSRC     |          1 | A fiesta! For cs people
+(1 row)
+
+-- Get comments on a post with ID 1
+SELECT *
+FROM Comment
+WHERE pid = 1;
+ cid | pid | creater_uid |         timestamp          |    body     
+-----+-----+-------------+----------------------------+-------------
+   1 |   1 |           2 | 2018-10-11 18:57:53.251731 | Great post!
+(1 row)
+
