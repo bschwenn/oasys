@@ -20,11 +20,13 @@ CREATE TABLE Event(
   name VARCHAR(128),
   time TIMESTAMP NOT NULL,
   location VARCHAR(256),
-  create_uid INTEGER NOT NULL REFERENCES Person(uid)
+  create_uid INTEGER NOT NULL REFERENCES Person(uid),
+  summary TEXT
 );
 
 CREATE TABLE Post(
   pid INTEGER NOT NULL PRIMARY KEY,
+  gid INTEGER NOT NULL REFERENCES Flock(gid),
   creater_uid INTEGER NOT NULL REFERENCES Person(uid),
   timestamp TIMESTAMP NOT NULL DEFAULT NOW(),
   kind VARCHAR(7) NOT NULL CHECK (kind = 'private' or kind = 'public'),
