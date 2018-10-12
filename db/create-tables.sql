@@ -84,7 +84,7 @@ CREATE TABLE Moderates(
 
 CREATE TABLE Studies(
   uid INTEGER NOT NULL REFERENCES Person(uid),
-  iid INTEGER NOT NULL REFERENCES Interest(iid), -- TODO: create assertion that iid tuple has is_study = true
+  iid INTEGER NOT NULL REFERENCES Interest(iid), -- TODO: create assertion that checks for valid major/minor combinations?
   kind VARCHAR(5) CHECK (kind IS NULL OR kind = 'major' OR kind = 'minor')
 );
 
@@ -116,7 +116,7 @@ CREATE TABLE Related(
 CREATE FUNCTION TF_ValidMajorMinor() RETURNS TRIGGER AS $$
 BEGIN
   IF EXISTS (SELECT * FROM Interests WHERE iid = NEW.iid AND is_study IS NOT TRUE) THEN
-    RAISE EXCEPTION '% is not a valid field of study', NEW.iid;
+    RAISE EXCEPTION '% is not a valid major or minor', NEW.iid;
   END IF;
   RETURN NEW;
 END;
