@@ -111,3 +111,18 @@ CREATE TABLE Related(
   iid INTEGER NOT NULL REFERENCES Interest(iid),
   PRIMARY KEY (gid, iid)
 );
+
+-- This should probably work to check whether or not a tuple is a valid major/minor
+CREATE FUNCTION TF_ValidMajorMinor() RETURNS TRIGGER AS $$
+BEGIN
+  IF EXISTS (SELECT * FROM Interests WHERE iid = NEW.iid AND is_study IS NOT TRUE) THEN
+    RAISE EXCEPTION '% is not a valid field of study', NEW.iid;
+  END IF;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER TG_ValidMajorMinor
+  BEFORE INSERT OR UPDATE OF iid ON Studies
+  FOR EACH ROW
+  EXECUTE PROCEDURE TF_ValidMajorMinor();
