@@ -31,10 +31,10 @@ public class JsonNodeTypeDescriptor extends AbstractTypeDescriptor<JsonNode> {
 
     @Override
     public boolean areEqual(JsonNode one, JsonNode another) {
-        if ( one == another ) {
+        if (one == another) {
             return true;
         }
-        if ( one == null || another == null ) {
+        if (one == null || another == null) {
             return false;
         }
         return
@@ -57,28 +57,28 @@ public class JsonNodeTypeDescriptor extends AbstractTypeDescriptor<JsonNode> {
         return JacksonUtil.toJsonNode(string);
     }
 
-    @SuppressWarnings({ "unchecked" })
+    @SuppressWarnings({"unchecked"})
     @Override
     public <X> X unwrap(
             JsonNode value,
             Class<X> type,
             WrapperOptions options
     ) {
-        if ( value == null ) {
+        if (value == null) {
             return null;
         }
-        if ( String.class.isAssignableFrom( type ) ) {
+        if (String.class.isAssignableFrom(type)) {
             return (X) toString(value);
         }
-        if ( JsonNode.class.isAssignableFrom( type ) ) {
+        if (JsonNode.class.isAssignableFrom(type)) {
             return (X) JacksonUtil.toJsonNode(toString(value));
         }
-        throw unknownUnwrap( type );
+        throw unknownUnwrap(type);
     }
 
     @Override
     public <X> JsonNode wrap(X value, WrapperOptions options) {
-        if ( value == null ) {
+        if (value == null) {
             return null;
         }
         return fromString(value.toString());

@@ -1,13 +1,11 @@
 package com.oasys.tables;
 
-import com.oasys.util.RelationshipId;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
@@ -21,6 +19,15 @@ import java.io.Serializable;
 @Table(name = "studies")
 @IdClass(Studies.StudiesId.class)
 public class Studies {
+    @Id
+    @Column(name = "uid", nullable = false)
+    private Long uid;
+    @Id
+    @Column(name = "iid", nullable = false)
+    private Long iid;
+    @Column(name = "kind")
+    private String kind;
+
     @Embeddable
     public static class StudiesId implements Serializable {
         private Long uid;
@@ -31,15 +38,4 @@ public class Studies {
             this.iid = iid;
         }
     }
-
-    @Id
-    @Column(name = "uid", nullable = false)
-    private Long uid;
-
-    @Id
-    @Column(name = "iid", nullable = false)
-    private Long iid;
-
-    @Column(name = "kind")
-    private String kind;
 }
