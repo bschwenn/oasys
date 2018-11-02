@@ -1,7 +1,7 @@
-package com.oasys.person;
+package com.oasys.tables;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.oasys.hibernate.JsonNodeBinaryType;
+import com.oasys.util.JsonNodeBinaryType;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -46,7 +46,8 @@ public class Person {
     @Type(type = "json-node")
     private JsonNode links;
 
-    public Person() {}
+    public Person() {
+    }
 
     public Person(String email, String name, int graduationYear, String photoPath, JsonNode links) {
         this.email = email;
