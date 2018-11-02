@@ -1,9 +1,9 @@
 ---- ENTITY SETS ----
 
 CREATE TABLE Person(
-  uid INTEGER NOT NULL PRIMARY KEY,
+  uid SERIAL NOT NULL PRIMARY KEY,
   name VARCHAR(64) NOT NULL,
-  email VARCHAR(256) NOT NULL,
+  email VARCHAR(256) NOT NULL UNIQUE,
   graduation_year INTEGER,
   photo_path VARCHAR(256),
   links JSON
@@ -17,10 +17,10 @@ CREATE TABLE Flock(
 
 CREATE TABLE Event(
   eid INTEGER NOT NULL PRIMARY KEY,
-  name VARCHAR(128),
+  name VARCHAR(128) NOT NULL,
   time TIMESTAMP NOT NULL,
   location VARCHAR(256),
-  create_uid INTEGER NOT NULL REFERENCES Person(uid),
+  creater_uid INTEGER NOT NULL REFERENCES Person(uid),
   summary TEXT
 );
 
