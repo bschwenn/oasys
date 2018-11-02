@@ -31,3 +31,6 @@ hs_err_pid*
 
 # Class files
 target/*
+
+# Secrets
+application-secrets.properties
