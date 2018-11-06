@@ -1,11 +1,12 @@
 package com.oasys;
 
-import com.oasys.person.Person;
-import com.oasys.person.PersonRepository;
+import com.oasys.tables.Person;
+import com.oasys.tables.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+// TODO (Ben): Remove... this is temporary and used for testing purposes
 @Component
 public class DatabaseLoader implements CommandLineRunner {
 
@@ -23,7 +24,14 @@ public class DatabaseLoader implements CommandLineRunner {
                 "Tim Cook",
                 1980,
                 null,
-                "")
+                null)
+        );
+        this.repository.save(new Person(
+                "steve.cook@duke.edu",
+                "Steve Cook",
+                1980,
+                null,
+                null)
         );
     }
 }
