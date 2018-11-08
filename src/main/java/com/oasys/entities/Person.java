@@ -1,4 +1,4 @@
-package com.oasys.tables;
+package com.oasys.entities;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.oasys.util.JsonNodeBinaryType;
@@ -13,6 +13,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @TypeDef(
@@ -27,7 +28,8 @@ import javax.persistence.Table;
 @Table(name = "person")
 public class Person {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="PERSON_SEQ")
+    @SequenceGenerator(name="PERSON_SEQ", sequenceName="PERSON_SEQ", allocationSize=100)
     @Column(name = "uid")
     private Long uid;
 
@@ -46,8 +48,7 @@ public class Person {
     @Type(type = "json-node")
     private JsonNode links;
 
-    public Person() {
-    }
+    public Person() { }
 
     public Person(String email, String name, int graduationYear, String photoPath, JsonNode links) {
         this.email = email;

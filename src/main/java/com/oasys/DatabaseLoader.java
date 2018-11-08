@@ -1,7 +1,7 @@
 package com.oasys;
 
-import com.oasys.tables.Person;
-import com.oasys.tables.PersonRepository;
+import com.oasys.entities.Person;
+import com.oasys.entities.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -19,19 +19,5 @@ public class DatabaseLoader implements CommandLineRunner {
 
     @Override
     public void run(String... strings) throws Exception {
-        this.repository.save(new Person(
-                "tim.cook@duke.edu",
-                "Tim Cook",
-                1980,
-                null,
-                null)
-        );
-        this.repository.save(new Person(
-                "steve.cook@duke.edu",
-                "Steve Cook",
-                1980,
-                null,
-                null)
-        );
     }
 }

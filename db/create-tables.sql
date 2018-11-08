@@ -115,7 +115,7 @@ CREATE TABLE Related(
 -- This should probably work to check whether or not a tuple is a valid major/minor
 CREATE FUNCTION TF_ValidMajorMinor() RETURNS TRIGGER AS $$
 BEGIN
-  IF EXISTS (SELECT * FROM Interests WHERE iid = NEW.iid AND is_study IS NOT TRUE) THEN
+  IF EXISTS (SELECT * FROM Interest WHERE iid = NEW.iid AND is_study IS NOT TRUE) THEN
     RAISE EXCEPTION '% is not a valid major or minor', NEW.iid;
   END IF;
   RETURN NEW;

@@ -1,4 +1,4 @@
-package com.oasys.tables;
+package com.oasys.entities;
 
 import org.springframework.data.repository.CrudRepository;
 

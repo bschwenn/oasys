@@ -1,4 +1,4 @@
-package com.oasys.tables;
+package com.oasys.entities;
 
 import lombok.Data;
 import lombok.Getter;
@@ -16,19 +16,32 @@ import java.sql.Timestamp;
 @Entity
 @Getter
 @Setter
-@Table(name = "message")
-public class Message {
+@Table(name = "comment")
+public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "mid")
-    private Long mid;
+    @Column(name = "cid")
+    private Long cid;
 
-    @Column(name = "tid", nullable = false)
-    private Long tid;
+    @Column(name = "pid", nullable = false)
+    private Long pid;
+
+    @Column(name = "creater_uid", nullable = false)
+    private Long createrUid;
 
     @Column(name = "timestamp", nullable = false)
     private Timestamp timestamp;
 
     @Column(name = "body", nullable = false)
     private String body;
+
+    public Comment() {}
+
+    public Comment(Long cid, Long pid, Long createrUid, Timestamp timestamp, String body) {
+        this.cid = cid;
+        this.pid = pid;
+        this.createrUid = createrUid;
+        this.timestamp = timestamp;
+        this.body = body;
+    }
 }

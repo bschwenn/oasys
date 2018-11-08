@@ -1,4 +1,4 @@
-package com.oasys.tables;
+package com.oasys.entities;
 
 import lombok.Data;
 import lombok.Getter;
@@ -12,14 +12,13 @@ import javax.persistence.IdClass;
 import javax.persistence.Table;
 import java.io.Serializable;
 
-
 @Data
 @Entity
 @Getter
 @Setter
-@Table(name = "follows")
-@IdClass(Follows.FollowsId.class)
-public class Follows {
+@Table(name = "moderates")
+@IdClass(Moderates.ModeratesId.class)
+public class Moderates {
     @Id
     @Column(name = "uid", nullable = false)
     private Long uid;
@@ -28,11 +27,11 @@ public class Follows {
     private Long gid;
 
     @Embeddable
-    public static class FollowsId implements Serializable {
+    public class ModeratesId implements Serializable {
         private Long uid;
         private Long gid;
 
-        public FollowsId(long uid, long gid) {
+        public ModeratesId(long uid, long gid) {
             this.uid = uid;
             this.gid = gid;
         }

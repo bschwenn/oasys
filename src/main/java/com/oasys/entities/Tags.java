@@ -1,4 +1,4 @@
-package com.oasys.tables;
+package com.oasys.entities;
 
 import lombok.Data;
 import lombok.Getter;
@@ -16,23 +16,23 @@ import java.io.Serializable;
 @Entity
 @Getter
 @Setter
-@Table(name = "interested")
-@IdClass(Interested.InterestedId.class)
-public class Interested {
+@Table(name = "tags")
+@IdClass(Tags.TagsId.class)
+public class Tags {
     @Id
-    @Column(name = "uid", nullable = false)
-    private Long uid;
+    @Column(name = "eid", nullable = false)
+    private Long eid;
     @Id
     @Column(name = "iid", nullable = false)
     private Long iid;
 
     @Embeddable
-    public static class InterestedId implements Serializable {
-        private Long uid;
+    public static class TagsId implements Serializable {
+        private Long eid;
         private Long iid;
 
-        public InterestedId(long uid, long iid) {
-            this.uid = uid;
+        public TagsId(long eid, long iid) {
+            this.eid = eid;
             this.iid = iid;
         }
     }
