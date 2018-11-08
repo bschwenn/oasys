@@ -6,7 +6,21 @@ CREATE TABLE Person(
   email VARCHAR(256) NOT NULL UNIQUE,
   graduation_year INTEGER,
   photo_path VARCHAR(256),
-  links JSON
+  links JSON,
+  username VARCHAR(256) NOT NULL UNIQUE,
+  password VARCHAR(256) NOT NULL
+);
+
+CREATE TABLE Role(
+  rid SERIAL NOT NULL PRIMARY KEY,
+  name VARCHAR(64) NOT NULL,
+  description VARCHAR(512)
+);
+
+CREATE TABLE PersonRole(
+  uid INTEGER NOT NULL REFERENCES Person(uid),
+  rid INTEGER NOT NULL REFERENCES Role(rid),
+  PRIMARY KEY (uid, rid)
 );
 
 CREATE TABLE Flock(
