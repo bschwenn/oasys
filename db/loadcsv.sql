@@ -17,3 +17,5 @@
 \copy Interested(uid, iid) FROM 'db/interested.csv' DELIMITER ',' CSV;
 
 \copy Related(gid, iid) FROM 'db/related.csv' DELIMITER ',' CSV;
+
+\copy Moderates(uid, gid) FROM 'db/moderates.csv' DELIMITER ',' CSV;
