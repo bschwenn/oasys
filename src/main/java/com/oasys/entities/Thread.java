@@ -1,4 +1,4 @@
-package com.oasys.tables;
+package com.oasys.entities;
 
 import lombok.Data;
 import lombok.Getter;
@@ -10,21 +10,19 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.sql.Timestamp;
 
 @Data
 @Entity
 @Getter
 @Setter
-@Table(name = "interest")
-public class Interest {
+@Table(name = "thread")
+public class Thread {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "iid")
-    private Long iid;
+    @Column(name = "tid", nullable = false)
+    private Long tid;
 
-    @Column(name = "name", nullable = false)
-    private String name;
-
-    @Column(name = "is_study", nullable = false)
-    private boolean isStudy;
+    @Column(name = "created_at")
+    private Timestamp createdAt;
 }

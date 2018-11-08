@@ -1,4 +1,4 @@
-package com.oasys.tables;
+package com.oasys.entities;
 
 import lombok.Data;
 import lombok.Getter;
@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.sql.Timestamp;
 
@@ -16,7 +17,7 @@ import java.sql.Timestamp;
 @Entity
 @Getter
 @Setter
-@Table(name = "message")
+@Table(name = "post")
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)

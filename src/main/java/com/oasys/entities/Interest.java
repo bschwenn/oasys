@@ -1,4 +1,4 @@
-package com.oasys.tables;
+package com.oasys.entities;
 
 import lombok.Data;
 import lombok.Getter;
@@ -15,16 +15,16 @@ import javax.persistence.Table;
 @Entity
 @Getter
 @Setter
-@Table(name = "flock")
-public class Flock {
+@Table(name = "interest")
+public class Interest {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "gid")
-    private Long gid;
+    @Column(name = "iid")
+    private Long iid;
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "photo_path")
-    private String photoPath;
+    @Column(name = "is_study", nullable = false)
+    private boolean isStudy;
 }
