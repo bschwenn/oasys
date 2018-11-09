@@ -69,6 +69,7 @@ public class Person {
             joinColumns = @JoinColumn(name = "uid", referencedColumnName = "uid"),
             inverseJoinColumns = @JoinColumn(name = "rid", referencedColumnName = "rid")
     )
+    @JsonIgnore
     private List<Role> roles;
 
     @ManyToMany(fetch = FetchType.LAZY)
@@ -77,6 +78,7 @@ public class Person {
             joinColumns = @JoinColumn(name = "uid", referencedColumnName = "uid"),
             inverseJoinColumns = @JoinColumn(name = "gid", referencedColumnName = "gid")
     )
+    @JsonIgnore
     private List<Flock> flocks;
 
     // TODO(Ben S:) Interests
