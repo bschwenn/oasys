@@ -1,0 +1,5 @@
+To generate the dataset from the home directory, use the following commands:
+
+createdb oasys
+psql -af db/create-tables.sql
+psql -af db/loadcsv.sql
