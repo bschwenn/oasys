@@ -12,7 +12,6 @@ import javax.persistence.IdClass;
 import javax.persistence.Table;
 import java.io.Serializable;
 
-
 @Data
 @Entity
 @Getter
