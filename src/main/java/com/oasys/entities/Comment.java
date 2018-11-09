@@ -9,6 +9,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.sql.Timestamp;
 
@@ -35,13 +37,9 @@ public class Comment {
     @Column(name = "body", nullable = false)
     private String body;
 
-    public Comment() {}
+    @ManyToOne
+    @JoinColumn(name="pid", insertable=false, updatable=false)
+    private Post post;
 
-    public Comment(Long cid, Long pid, Long createrUid, Timestamp timestamp, String body) {
-        this.cid = cid;
-        this.pid = pid;
-        this.createrUid = createrUid;
-        this.timestamp = timestamp;
-        this.body = body;
-    }
+    public Comment() {}
 }

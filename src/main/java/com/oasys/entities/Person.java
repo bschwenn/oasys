@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.Where;
+import org.hibernate.annotations.WhereJoinTable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -54,7 +56,7 @@ public class Person {
     private String photoPath;
 
     @Type(type = "json-node")
-    private JsonNode links;
+    private JsonNode externalLinks;
 
     @Column(name = "username")
     private String username;
@@ -81,22 +83,36 @@ public class Person {
     @JsonIgnore
     private List<Flock> flocks;
 
-    // TODO(Ben S:) Interests
-    // Moderates
-    // Participates
-    // Studies
-    // Follows
-    // Groups etc.
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "Interested",
+            joinColumns = @JoinColumn(name = "uid", referencedColumnName = "uid"),
+            inverseJoinColumns = @JoinColumn(name = "iid", referencedColumnName = "iid")
+    )
+    @JsonIgnore
+    private List<Interest> interests;
+
+    @ManyToMany
+    @JoinTable(
+            name = "Studies",
+            joinColumns = @JoinColumn(name = "uid", referencedColumnName = "uid"),
+            inverseJoinColumns = @JoinColumn(name = "iid", referencedColumnName = "iid")
+
+    )
+    @WhereJoinTable(clause = "kind = 'major'")
+    private List<Interest> majors;
+
+    @ManyToMany
+    @JoinTable(
+            name = "Studies",
+            joinColumns = @JoinColumn(name = "uid", referencedColumnName = "uid"),
+            inverseJoinColumns = @JoinColumn(name = "iid", referencedColumnName = "iid")
+
+    )
+    @WhereJoinTable(clause = "kind = 'minor'")
+    private List<Interest> minor;
 
     public Person() { }
-
-    public Person(String email, String name, int graduationYear, String photoPath, JsonNode links) {
-        this.email = email;
-        this.name = name;
-        this.graduationYear = graduationYear;
-        this.photoPath = photoPath;
-        this.links = links;
-    }
 
     public Long getUid() {
         return uid;
@@ -138,12 +154,12 @@ public class Person {
         this.photoPath = photoPath;
     }
 
-    public JsonNode getLinks() {
-        return links;
+    public JsonNode getExternalLinks() {
+        return externalLinks;
     }
 
-    public void setLinks(JsonNode links) {
-        this.links = links;
+    public void setExternalLinks(JsonNode links) {
+        this.externalLinks = externalLinks;
     }
 
     public String getUsername() {
@@ -168,5 +184,37 @@ public class Person {
 
     public void setRoles(List<Role> roles) {
         this.roles = roles;
+    }
+
+    public List<Flock> getFlocks() {
+        return flocks;
+    }
+
+    public void setFlocks(List<Flock> flocks) {
+        this.flocks = flocks;
+    }
+
+    public List<Interest> getInterests() {
+        return interests;
+    }
+
+    public void setInterests(List<Interest> interests) {
+        this.interests = interests;
+    }
+
+    public List<Interest> getMajors() {
+        return majors;
+    }
+
+    public void setMajors(List<Interest> majors) {
+        this.majors = majors;
+    }
+
+    public List<Interest> getMinor() {
+        return minor;
+    }
+
+    public void setMinor(List<Interest> minor) {
+        this.minor = minor;
     }
 }
