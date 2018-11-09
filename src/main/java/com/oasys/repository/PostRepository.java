@@ -12,13 +12,13 @@ import java.util.List;
 
 @RepositoryRestResource()
 public interface PostRepository extends PagingAndSortingRepository<Post, Long> {
-    @Query( "SELECT post FROM Post post, Person person " +
-            "WHERE person.username = :username " +
-            "AND post.gid IN (SELECT f.gid FROM Follows f WHERE f.uid = person.uid)")
-    @PreAuthorize("#username.equals(authentication.principal)")
-    List<Post> getUserFeed(@Param("username") String username);
+//    @Query( "SELECT post FROM Post post, Person person " +
+//            "WHERE person.username = :username " +
+//            "AND post.gid IN (SELECT f.gid FROM Follows f WHERE f.uid = person.uid)")
+//    @PreAuthorize("#username.equals(authentication.principal)")
+//    List<Post> getUserFeed(@Param("username") String username);
 
-    @Query("SELECT p FROM Post p WHERE p.gid = :gid")
+    @Query("SELECT p FROM Post p WHERE p.gid = :gid ORDER BY p.timestamp")
     @PreAuthorize("@groupPermissionEvaluator.isInGroup(authentication, #gid)")
     List<Post> getGroupFeed(@Param("gid") long gid);
 }
