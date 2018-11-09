@@ -18,6 +18,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -65,14 +66,22 @@ public class Person {
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "PersonRole",
-            joinColumns = @JoinColumn(name = "rid", referencedColumnName = "uid"),
-            inverseJoinColumns = @JoinColumn(name = "uid", referencedColumnName = "rid"))
+            joinColumns = @JoinColumn(name = "uid", referencedColumnName = "uid"),
+            inverseJoinColumns = @JoinColumn(name = "rid", referencedColumnName = "rid")
+    )
     private List<Role> roles;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "Member",
+            joinColumns = @JoinColumn(name = "uid", referencedColumnName = "uid"),
+            inverseJoinColumns = @JoinColumn(name = "gid", referencedColumnName = "gid")
+    )
+    private List<Flock> flocks;
 
     // TODO(Ben S:) Interests
     // Moderates
     // Participates
-    // Member
     // Studies
     // Follows
     // Groups etc.
