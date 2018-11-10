@@ -1,6 +1,7 @@
 package com.oasys.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.oasys.util.JsonNodeBinaryType;
 import lombok.Data;
@@ -11,6 +12,8 @@ import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.Where;
 import org.hibernate.annotations.WhereJoinTable;
 
+import javax.persistence.Access;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -62,10 +65,10 @@ public class Person {
     private String username;
 
     @Column(name = "password")
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(cascade= CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(
             name = "PersonRole",
             joinColumns = @JoinColumn(name = "uid", referencedColumnName = "uid"),
@@ -74,7 +77,7 @@ public class Person {
     @JsonIgnore
     private List<Role> roles;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(cascade=CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(
             name = "Member",
             joinColumns = @JoinColumn(name = "uid", referencedColumnName = "uid"),
@@ -82,6 +85,16 @@ public class Person {
     )
     @JsonIgnore
     private List<Flock> flocks;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "Follows",
+            joinColumns = @JoinColumn(name = "uid", referencedColumnName = "uid"),
+            inverseJoinColumns = @JoinColumn(name = "gid", referencedColumnName = "gid")
+    )
+    @JsonIgnore
+
+    private List<Flock> followedFlocks;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
@@ -216,5 +229,13 @@ public class Person {
 
     public void setMinor(List<Interest> minor) {
         this.minor = minor;
+    }
+
+    public List<Flock> getFollowedFlocks() {
+        return followedFlocks;
+    }
+
+    public void setFollowedFlocks(List<Flock> followedFlocks) {
+        this.followedFlocks = followedFlocks;
     }
 }
