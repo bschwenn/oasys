@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -17,7 +18,7 @@ import javax.persistence.TypedQuery;
 import java.io.Serializable;
 import java.util.Optional;
 
-@Component(value="groupPermissionEvaluator")
+@Service(value="groupPermissionEvaluator")
 public class GroupPermissionService {
     @Autowired
     private EntityManager em;
