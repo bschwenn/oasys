@@ -34,8 +34,9 @@ CREATE TABLE Event(
   name VARCHAR(128) NOT NULL,
   time TIMESTAMP NOT NULL,
   location VARCHAR(256),
-  creator_uid INTEGER NOT NULL REFERENCES Person(uid),
-  summary TEXT
+  creator_uid INTEGER NOT NULL REFERENCES Person(uid), -- Admin if group event
+  summary TEXT,
+  gid INTEGER -- If set, is associated with a group
 );
 
 CREATE TABLE Post(

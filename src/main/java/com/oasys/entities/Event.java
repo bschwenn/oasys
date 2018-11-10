@@ -1,16 +1,22 @@
 package com.oasys.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import java.sql.Timestamp;
+import java.util.List;
 
 @Data
 @Entity
@@ -37,4 +43,20 @@ public class Event {
 
     @Column(name = "body")
     private String summary;
+
+    @Column(name = "gid")
+    private Long groupId;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "Tags",
+            joinColumns = @JoinColumn(name = "eid", referencedColumnName = "eid"),
+            inverseJoinColumns = @JoinColumn(name = "iid", referencedColumnName = "iid")
+    )
+    @JsonIgnore
+    private List<Interest> relatedInterests;
+
+    public boolean isGroupEvent() {
+        return groupId == null;
+    }
 }

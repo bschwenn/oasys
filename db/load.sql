@@ -20,8 +20,8 @@ INSERT INTO Flock VALUES
   (2, 'CS Department', '/var/media/2468.png');
 
 INSERT INTO Event VALUES -- not real times :)
-  (1, 'CS Fiesta', NOW(), 'LSRC', 1, 'A fiesta! For cs people'),
-  (2, 'Milestone 1 Due', NOW(), NULL, 2, 'First project milestone is due at midnight');
+  (1, 'CS Fiesta', NOW(), 'LSRC', 1, 'A fiesta! For cs people', 2),
+  (2, 'Milestone 1 Due', NOW(), NULL, 2, 'First project milestone is due at midnight', 1);
 
 INSERT INTO Post VALUES
   (1, 2, 1, NOW(), 'public', 'Hey guys! Be sure to attend the CS fiesta on Friday!');
