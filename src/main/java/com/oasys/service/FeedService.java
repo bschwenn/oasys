@@ -1,5 +1,6 @@
 package com.oasys.service;
 
+import com.oasys.config.Constants;
 import com.oasys.entities.Flock;
 import com.oasys.entities.Person;
 import com.oasys.entities.Post;
@@ -8,22 +9,31 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class FeedService {
     @Autowired
-    private PostRepository postRepository;
+    private EntityManager em;
 
-    public List<Post> getUserFeed(Person user) {
-        // TODO (Ben): not using a query here because we're probably going to want granular control
-        // over what goes in a feed, but this will be a silly/inefficient method as number of posts
-        // grows.
-        List<Post> feedPosts = new ArrayList<>();
-        for (Flock f : user.getFlocks()) {
-            feedPosts.addAll(postRepository.getGroupFeed(f.getGid()));
-        }
-        return feedPosts;
+    public List<Post> getUserFeed(Person user, int lastPage) {
+        // TODO (Ben): we're probably going to want the feed to be more customizable
+        TypedQuery<Post> postQuery = em.createQuery(
+                String.format(
+                        "SELECT p " +
+                        "FROM Post p, MemberRecord m " +
+                        "WHERE m.member.uid = %s " +
+                        "AND p.gid = m.flock.gid " +
+                        "ORDER BY p.timestamp DESC",
+                        user.getUid()
+                ),
+                Post.class
+        );
+        postQuery.setFirstResult(lastPage * Constants.PAGE_SIZE);
+        postQuery.setMaxResults(Constants.PAGE_SIZE);
+        return postQuery.getResultList();
     }
 }

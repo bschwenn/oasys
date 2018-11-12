@@ -21,18 +21,25 @@ import java.util.Optional;
 @Service(value="groupPermissionEvaluator")
 public class GroupPermissionService {
     @Autowired
-    private EntityManager em;
-    @Autowired
     private PersonRepository personRepository;
     @Autowired
     private FlockRepository flockRepository;
 
-    public boolean isInGroup(Authentication authentication, Long gid) {
-        String username = (String) authentication.getPrincipal();
+    public boolean isInGroup(String username, Long gid) {
         Person person = personRepository.findByUsername(username);
         Optional<Flock> flockBox = flockRepository.findById(gid);
-        if (flockBox.isPresent()) {
+        if (flockBox.isPresent() && person != null && person.getFlocks() != null) {
             return person.getFlocks().contains(flockBox.get());
+        } else {
+            return false;
+        }
+    }
+
+    public boolean isGroupAdmin(String username, Long gid) {
+        Person user = personRepository.findByUsername(username);
+        Optional<Flock> flockBox = flockRepository.findById(gid);
+        if (flockBox.isPresent()) {
+            return flockBox.get().getAdmins().contains(user);
         } else {
             return false;
         }
