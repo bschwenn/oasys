@@ -1,9 +1,7 @@
 package com.oasys.controllers;
 
 import com.oasys.entities.Event;
-import com.oasys.entities.Post;
 import com.oasys.repository.EventRepository;
-import com.oasys.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

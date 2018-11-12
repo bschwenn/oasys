@@ -4,18 +4,9 @@ import com.oasys.entities.Flock;
 import com.oasys.entities.Person;
 import com.oasys.repository.FlockRepository;
 import com.oasys.repository.PersonRepository;
-import jdk.nashorn.internal.runtime.options.Option;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.security.access.PermissionEvaluator;
-import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
-import javax.persistence.TypedQuery;
-import java.io.Serializable;
 import java.util.Optional;
 
 @Service(value="groupPermissionEvaluator")

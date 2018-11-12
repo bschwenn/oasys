@@ -1,7 +1,6 @@
 package com.oasys.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -15,7 +14,6 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import java.util.HashSet;
 import java.util.Set;
 
 @Entity

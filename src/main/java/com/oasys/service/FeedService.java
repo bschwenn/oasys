@@ -1,17 +1,13 @@
 package com.oasys.service;
 
 import com.oasys.config.Constants;
-import com.oasys.entities.Flock;
 import com.oasys.entities.Person;
 import com.oasys.entities.Post;
-import com.oasys.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RestController;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service

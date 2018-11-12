@@ -2,7 +2,6 @@ package com.oasys.repository;
 
 import com.oasys.entities.Flock;
 import org.springframework.data.repository.PagingAndSortingRepository;
-import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.Optional;
 

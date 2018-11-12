@@ -1,8 +1,5 @@
 package com.oasys.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonFilter;
-import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -13,8 +10,6 @@ import com.oasys.util.JacksonUtil;
 import com.oasys.util.JsonNodeBinaryType;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
-import org.hibernate.annotations.WhereJoinTable;
-import org.springframework.data.jpa.repository.Query;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -29,9 +24,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
