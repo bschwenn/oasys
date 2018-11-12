@@ -6,6 +6,7 @@ import com.oasys.repository.PersonRepository;
 import com.oasys.service.FeedService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,8 +20,8 @@ public class FeedController {
     @Autowired
     private FeedService feedService;
 
-    @RequestMapping("/feed")
-    public List<Post> getFeed() {
+    @RequestMapping("/feed/{page}")
+    public List<Post> getFeed(@PathVariable int page) {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (principal == null) {
             // TODO (return not authorized)
@@ -28,6 +29,6 @@ public class FeedController {
         }
         String username = (String) principal;
         Person user = personRepository.findByUsername(username);
-        return feedService.getUserFeed(user);
+        return feedService.getUserFeed(user, page);
     }
 }

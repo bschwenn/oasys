@@ -1,0 +1,9 @@
+package com.oasys.repository;
+
+import com.oasys.entities.Interest;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.rest.core.annotation.RepositoryRestResource;
+
+@RepositoryRestResource
+public interface InterestRepository extends CrudRepository<Interest, Long> {
+}

@@ -51,7 +51,7 @@ CREATE TABLE Post(
 CREATE TABLE Comment(
   cid INTEGER NOT NULL,
   pid INTEGER NOT NULL REFERENCES Post(pid),
-  creater_uid INTEGER NOT NULL REFERENCES Person(uid),
+  creator_uid INTEGER NOT NULL REFERENCES Person(uid),
   timestamp TIMESTAMP NOT NULL DEFAULT NOW(),
   body TEXT NOT NULL,
   PRIMARY KEY(cid, pid)

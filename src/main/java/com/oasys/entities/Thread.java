@@ -1,9 +1,6 @@
 package com.oasys.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -19,10 +16,7 @@ import javax.persistence.Table;
 import java.sql.Timestamp;
 import java.util.List;
 
-@Data
 @Entity
-@Getter
-@Setter
 @Table(name = "thread")
 public class Thread {
     @Id
@@ -30,7 +24,8 @@ public class Thread {
     @Column(name = "tid", nullable = false)
     private Long tid;
 
-    @Column(name = "created_at")
+@Column(name = "timestamp", nullable = false, updatable = false, insertable = false,
+        columnDefinition = "TIMESTAMP DEFAULT NOW()")
     private Timestamp createdAt;
 
     @ManyToMany(fetch = FetchType.EAGER)
