@@ -34,7 +34,7 @@ CREATE TABLE Event(
   name VARCHAR(128) NOT NULL,
   time TIMESTAMP NOT NULL,
   location VARCHAR(256),
-  creater_uid INTEGER NOT NULL REFERENCES Person(uid), -- Admin if group event
+  creator_uid INTEGER NOT NULL REFERENCES Person(uid), -- Admin if group event
   summary TEXT,
   gid INTEGER -- If set, is associated with a group
 );
@@ -42,7 +42,7 @@ CREATE TABLE Event(
 CREATE TABLE Post(
   pid INTEGER NOT NULL PRIMARY KEY,
   gid INTEGER NOT NULL REFERENCES Flock(gid),
-  creater_uid INTEGER NOT NULL REFERENCES Person(uid),
+  creator_uid INTEGER NOT NULL REFERENCES Person(uid),
   timestamp TIMESTAMP NOT NULL DEFAULT NOW(),
   kind VARCHAR(7) NOT NULL CHECK (kind = 'private' or kind = 'public'),
   body TEXT NOT NULL
@@ -51,7 +51,7 @@ CREATE TABLE Post(
 CREATE TABLE Comment(
   cid INTEGER NOT NULL,
   pid INTEGER NOT NULL REFERENCES Post(pid),
-  creater_uid INTEGER NOT NULL REFERENCES Person(uid),
+  creator_uid INTEGER NOT NULL REFERENCES Person(uid),
   timestamp TIMESTAMP NOT NULL DEFAULT NOW(),
   body TEXT NOT NULL,
   PRIMARY KEY(cid, pid)
