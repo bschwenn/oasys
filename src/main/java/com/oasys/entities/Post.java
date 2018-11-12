@@ -25,10 +25,11 @@ public class Post {
     @Column(name = "gid", nullable = false)
     private Long gid;
 
-    @Column(name = "creater_uid", nullable = false)
-    private Long createrUid;
+    @Column(name = "creator_uid", nullable = false)
+    private Long creatorUid;
 
-    @Column(name = "timestamp", nullable = false)
+    @Column(name = "timestamp", nullable = false, updatable = false, insertable = false,
+            columnDefinition = "TIMESTAMP DEFAULT NOW()")
     private Timestamp timestamp;
 
     @Column(name = "kind", nullable = false)
@@ -58,12 +59,12 @@ public class Post {
         this.gid = gid;
     }
 
-    public Long getCreaterUid() {
-        return createrUid;
+    public Long getCreatorUid() {
+        return creatorUid;
     }
 
-    public void setCreaterUid(Long createrUid) {
-        this.createrUid = createrUid;
+    public void setCreatorUid(Long creatorUid) {
+        this.creatorUid = creatorUid;
     }
 
     public Timestamp getTimestamp() {

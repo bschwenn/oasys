@@ -8,6 +8,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import java.sql.Timestamp;
 
 @Entity
@@ -21,7 +23,8 @@ public class Message {
     @Column(name = "tid", nullable = false)
     private Long tid;
 
-    @Column(name = "timestamp", nullable = false)
+    @Column(name = "timestamp", nullable = false, updatable = false, insertable = false,
+            columnDefinition = "TIMESTAMP DEFAULT NOW()")
     private Timestamp timestamp;
 
     @Column(name = "body", nullable = false)

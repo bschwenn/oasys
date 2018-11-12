@@ -25,7 +25,7 @@ public class Interest {
     @Column(name = "is_study", nullable = false)
     private boolean isStudy;
 
-    @OneToMany(mappedBy = "interest", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    @OneToMany(mappedBy = "interest", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<StudyRecord> studyRecords;
 
     @ManyToMany(mappedBy = "interests")
@@ -38,9 +38,7 @@ public class Interest {
         interested.add(p);
     }
 
-    public Long getIid() {
-        return iid;
-    }
+
 
     public void addStudyRecord(StudyRecord studyRecord) {
         studyRecords.add(studyRecord);
@@ -48,6 +46,18 @@ public class Interest {
 
     public void removeStudyRecord(StudyRecord studyRecord) {
         studyRecords.remove(studyRecord);
+    }
+
+    public Long getIid() {
+        return iid;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public boolean isStudy() {
+        return isStudy;
     }
 
     @Override

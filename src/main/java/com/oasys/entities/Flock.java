@@ -43,7 +43,7 @@ public class Flock {
     )
     private Set<Person> admins;
 
-    @OneToMany(mappedBy = "flock"/*, cascade = CascadeType.ALL*/, orphanRemoval = true)
+    @OneToMany(mappedBy = "flock", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private Set<MemberRecord> memberRecords;
 

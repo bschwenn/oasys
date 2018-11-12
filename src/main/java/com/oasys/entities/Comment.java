@@ -21,8 +21,8 @@ public class Comment {
     @Column(name = "pid", nullable = false)
     private Long pid;
 
-    @Column(name = "creater_uid", nullable = false)
-    private Long createrUid;
+    @Column(name = "creator_uid", nullable = false)
+    private Long creatorUid;
 
     @Column(name = "timestamp", nullable = false)
     private Timestamp timestamp;

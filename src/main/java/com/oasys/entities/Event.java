@@ -12,7 +12,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -26,14 +29,14 @@ public class Event {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "time", nullable = false)
-    private Timestamp time;
+    @Column(name = "time", insertable = true, updatable = false)
+    private Date time;
 
     @Column(name = "location")
     private String location;
 
-    @Column(name = "creater_uid", nullable = false)
-    private Long createrUid;
+    @Column(name = "creator_uid", nullable = false)
+    private Long creatorUid;
 
     @Column(name = "body")
     private String summary;
@@ -49,6 +52,71 @@ public class Event {
     )
     @JsonIgnore
     private List<Interest> relatedInterests;
+
+    public Long getEid() {
+        return eid;
+    }
+
+    public void setEid(Long eid) {
+        this.eid = eid;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Date getTime() {
+        return time;
+    }
+
+    public void setTime(Date time) {
+        this.time = time;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public Long getCreatorUid() {
+        return creatorUid;
+    }
+
+    public void setCreatorUid(Long creatorUid) {
+        this.creatorUid = creatorUid;
+    }
+
+    public String getSummary() {
+        return summary;
+    }
+
+    public void setSummary(String summary) {
+        this.summary = summary;
+    }
+
+    public Long getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(Long groupId) {
+        this.groupId = groupId;
+    }
+
+    @JsonIgnore
+    public List<Interest> getRelatedInterests() {
+        return relatedInterests;
+    }
+
+    public void setRelatedInterests(List<Interest> relatedInterests) {
+        this.relatedInterests = relatedInterests;
+    }
 
     public boolean isGroupEvent() {
         return groupId == null;

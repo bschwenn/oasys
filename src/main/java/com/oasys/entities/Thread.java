@@ -13,6 +13,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -24,7 +26,8 @@ public class Thread {
     @Column(name = "tid", nullable = false)
     private Long tid;
 
-    @Column(name = "created_at")
+@Column(name = "timestamp", nullable = false, updatable = false, insertable = false,
+        columnDefinition = "TIMESTAMP DEFAULT NOW()")
     private Timestamp createdAt;
 
     @ManyToMany(fetch = FetchType.EAGER)

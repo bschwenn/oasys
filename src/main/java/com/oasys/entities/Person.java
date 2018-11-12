@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.oasys.repository.MemberRecordRepository;
 import com.oasys.repository.StudyRecordRepository;
+import com.oasys.util.JacksonUtil;
 import com.oasys.util.JsonNodeBinaryType;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
@@ -30,6 +31,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -60,6 +62,7 @@ public class Person {
     @Column(name = "photo_path")
     private String photoPath;
 
+    @Column(name = "links")
     @Type(type = "json-node")
     private JsonNode externalLinks;
 
@@ -79,7 +82,7 @@ public class Person {
     @JsonIgnore
     private Set<Role> roles;
 
-    @OneToMany(mappedBy = "member"/*, cascade = CascadeType.ALL*/, orphanRemoval = true)
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<MemberRecord> memberRecords;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = {
@@ -98,6 +101,8 @@ public class Person {
     @JsonIgnore
     private Set<Flock> adminForFlocks;
 
+
+
     @ManyToMany(fetch = FetchType.LAZY, cascade = {
             CascadeType.MERGE,
             CascadeType.PERSIST
@@ -110,7 +115,7 @@ public class Person {
     @JsonIgnore
     private Set<Interest> interests;
 
-    @OneToMany(mappedBy = "person", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    @OneToMany(mappedBy = "person", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private Set<StudyRecord> studyRecords;
 
@@ -141,6 +146,10 @@ public class Person {
         return password;
     }
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     @JsonIgnore
     public Set<Role> getRoles() {
         return roles;
@@ -154,6 +163,10 @@ public class Person {
     public void addInterest(Interest interest) {
         interests.add(interest);
         interest.addInterested(this);
+    }
+
+    public void removeInterest(Interest interest) {
+        interests.remove(interest);
     }
 
     @JsonIgnore
@@ -236,6 +249,34 @@ public class Person {
             memberRecords.remove(toRemove);
             interest.removeStudyRecord(toRemove);
         }
+    }
+
+    public int getGraduationYear() {
+        return graduationYear;
+    }
+
+    public void setGraduationYear(int graduationYear) {
+        this.graduationYear = graduationYear;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public JsonNode getExternalLinks() {
+        return externalLinks;
+    }
+
+    public void setExternalLinks(String externalLinks) {
+        this.externalLinks = JacksonUtil.toJsonNode(externalLinks);
+    }
+
+    public String getPhotoPath() {
+        return photoPath;
+    }
+
+    public void setPhotoPath(String photoPath) {
+        this.photoPath = photoPath;
     }
 
     @Override
