@@ -42,9 +42,9 @@ public class PersonController {
 
     @PostMapping("/persons")
     public Person createPerson(@RequestBody Person person) {
-        personRepository.save(person);
         String encryptedPassword = passwordEncoder.encode(person.getPassword());
         person.setPassword(encryptedPassword);
+        personRepository.save(person);
         return person;
     }
 
@@ -119,7 +119,7 @@ public class PersonController {
     }
 
     @RequestMapping(value = "/persons/{username}/interests", method = {RequestMethod.POST})
-    //@PreAuthorize("#username.equals(authentication.principal)")
+    @PreAuthorize("#username.equals(authentication.principal)")
     public Person addInterests(@PathVariable String username, @RequestBody List<String> interestNames) {
         Person user = personRepository.findByUsername(username);
         for(String interestName : interestNames) {
@@ -131,7 +131,7 @@ public class PersonController {
     }
 
     @RequestMapping(value = "/persons/{username}/majors", method = {RequestMethod.POST})
-    //@PreAuthorize("#username.equals(authentication.principal)")
+    @PreAuthorize("#username.equals(authentication.principal)")
     public Person addMajors(@PathVariable String username, @RequestBody List<String> majorNames) {
         Person user = personRepository.findByUsername(username);
         for(String majorName : majorNames) {
@@ -143,7 +143,7 @@ public class PersonController {
     }
 
     @RequestMapping(value = "/persons/{username}/minors", method = {RequestMethod.POST})
-   // @PreAuthorize("#username.equals(authentication.principal)")
+    @PreAuthorize("#username.equals(authentication.principal)")
     public Person addMinors(@PathVariable String username, @RequestBody List<String> minorNames) {
         Person user = personRepository.findByUsername(username);
         for(String minorName : minorNames) {
