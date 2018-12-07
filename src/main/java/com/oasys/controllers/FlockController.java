@@ -89,8 +89,7 @@ public class FlockController {
         String deleter = (String) principal;
         if (!username.equals(deleter) && !groupPermissionService.isGroupAdmin(deleter, fid) || !flockBox.isPresent()) {
             return null; // Prob should redirect to some kind of unauthorized page
-        }
-        else {
+        } else {
             Flock flock = flockBox.get();
             user.removeFlock(flock);
             personRepository.save(user);
@@ -115,5 +114,11 @@ public class FlockController {
     public Set<Person> getFlockAdmins(@PathVariable long fid) {
         Optional<Flock> flockBox = flockRepository.findById(fid);
         return flockBox.isPresent() ? flockBox.get().getAdmins() : new HashSet<>();
+    }
+
+    @RequestMapping("/flocks/name/{flockName}")
+    public Flock getFlockByName(@PathVariable String flockName) {
+        Flock f = flockRepository.findByName(flockName);
+        return f;
     }
 }

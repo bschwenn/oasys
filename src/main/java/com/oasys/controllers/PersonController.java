@@ -124,6 +124,10 @@ public class PersonController {
         Person user = personRepository.findByUsername(username);
         for(String interestName : interestNames) {
             Interest interest = interestRepository.findByName(interestName);
+            if (interest == null) {
+                interest = new Interest(interestName, false);
+                interestRepository.save(interest);
+            }
             user.addInterest(interest);
         }
         personRepository.save(user);
@@ -136,6 +140,10 @@ public class PersonController {
         Person user = personRepository.findByUsername(username);
         for(String majorName : majorNames) {
             Interest interest = interestRepository.findByName(majorName);
+            if (interest == null) {
+                interest = new Interest(majorName, true);
+                interestRepository.save(interest);
+            }
             user.addStudy(interest, "major", studyRecordRepository);
         }
         personRepository.save(user);
@@ -148,6 +156,10 @@ public class PersonController {
         Person user = personRepository.findByUsername(username);
         for(String minorName : minorNames) {
             Interest interest = interestRepository.findByName(minorName);
+            if (interest == null) {
+                interest = new Interest(minorName, true);
+                interestRepository.save(interest);
+            }
             user.addStudy(interest, "minor", studyRecordRepository);
         }
         personRepository.save(user);
