@@ -38,8 +38,6 @@ public class Interest {
         interested.add(p);
     }
 
-
-
     public void addStudyRecord(StudyRecord studyRecord) {
         studyRecords.add(studyRecord);
     }
@@ -58,6 +56,13 @@ public class Interest {
 
     public boolean isStudy() {
         return isStudy;
+    }
+
+    public Interest() {}
+
+    public Interest(String name, boolean isStudy) {
+        this.name = name;
+        this.isStudy = isStudy;
     }
 
     @Override

@@ -94,8 +94,6 @@ public class Person {
     @JsonIgnore
     private Set<Flock> adminForFlocks;
 
-
-
     @ManyToMany(fetch = FetchType.LAZY, cascade = {
             CascadeType.MERGE,
             CascadeType.PERSIST
@@ -270,6 +268,10 @@ public class Person {
 
     public void setPhotoPath(String photoPath) {
         this.photoPath = photoPath;
+    }
+
+    public Set<Flock> getAdminForFlocks() {
+        return adminForFlocks;
     }
 
     @Override
