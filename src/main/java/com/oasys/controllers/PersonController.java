@@ -10,14 +10,10 @@ import com.oasys.repository.StudyRecordRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -40,6 +36,13 @@ public class PersonController {
         return personRepository.findByUsername(username);
     }
 
+    @RequestMapping("/current_user")
+    @ResponseBody
+    public Person getPerson(Principal principal) {
+        String username = principal.getName();
+        return personRepository.findByUsername(username);
+    }
+
     @PostMapping("/persons")
     public Person createPerson(@RequestBody Person person) {
         String encryptedPassword = passwordEncoder.encode(person.getPassword());
@@ -53,13 +56,34 @@ public class PersonController {
         return personRepository.findByUsername(username).getMajors();
     }
 
+    @RequestMapping("/current_user/majors")
+    @ResponseBody
+    public Set<Interest> getMajors(Principal principal) {
+        String username = principal.getName();
+        return personRepository.findByUsername(username).getMajors();
+    }
+
     @RequestMapping("/persons/{username}/minors")
     public Set<Interest> getMinors(@PathVariable String username) {
         return personRepository.findByUsername(username).getMinors();
     }
 
+    @RequestMapping("/current_user/minors")
+    @ResponseBody
+    public Set<Interest> getMinors(Principal principal) {
+        String username = principal.getName();
+        return personRepository.findByUsername(username).getMinors();
+    }
+
     @RequestMapping("/persons/{username}/flocks")
     public Set<Flock> getPersonFlocks(@PathVariable String username) {
+        Person user = personRepository.findByUsername(username);
+        return user.getFlocks();
+    }
+
+    @RequestMapping("/current_user/flocks")
+    public Set<Flock> getPersonFlocks(Principal principal) {
+        String username = principal.getName();
         Person user = personRepository.findByUsername(username);
         return user.getFlocks();
     }
@@ -70,9 +94,16 @@ public class PersonController {
         return user.getFollowedFlocks();
     }
 
-    @PostMapping("/persons/{username}/follows/{fid}")
-    @PreAuthorize("#username.equals(authentication.principal)")
-    public Flock followFlock(@PathVariable String username, @PathVariable Long fid) {
+    @RequestMapping("/current_user/follows")
+    public Set<Flock> getPersonFollows(Principal principal) {
+        String username = principal.getName();
+        Person user = personRepository.findByUsername(username);
+        return user.getFollowedFlocks();
+    }
+
+    @PostMapping("/current_user/follows/{fid}")
+    public Flock followFlock(Principal principal, @PathVariable Long fid) {
+        String username = principal.getName();
         Person user = personRepository.findByUsername(username);
         Optional<Flock> flockBox = flockRepository.findById(fid);
         if (flockBox.isPresent()) {
@@ -85,16 +116,36 @@ public class PersonController {
         }
     }
 
+    @RequestMapping("/persons/{username}/admin_roles")
+    public Set<Flock> getAdministratedFlocks(@PathVariable String username) {
+        Person user = personRepository.findByUsername(username);
+        return user.getAdminForFlocks();
+    }
+
+    @RequestMapping("/current_user/admin_roles")
+    public Set<Flock> getAdministratedFlocks(Principal principal) {
+        String username = principal.getName();
+        Person user = personRepository.findByUsername(username);
+        return user.getAdminForFlocks();
+    }
+
     @RequestMapping("/persons/{username}/interests")
     public Set<Interest> getPersonInterests(@PathVariable String username) {
         Person user = personRepository.findByUsername(username);
         return user.getInterests();
     }
 
-    @RequestMapping(value = "/persons/{username}/interests/{iid}", method = {RequestMethod.DELETE, RequestMethod.POST})
-    @PreAuthorize("#username.equals(authentication.principal)")
-    public Person addInterest(@PathVariable String username, @PathVariable Long iid, String kind,
+    @RequestMapping("/current_user/interests")
+    public Set<Interest> getPersonInterests(Principal principal) {
+        String username = principal.getName();
+        Person user = personRepository.findByUsername(username);
+        return user.getInterests();
+    }
+
+    @RequestMapping(value = "/current_user/interests/{iid}", method = {RequestMethod.DELETE, RequestMethod.POST})
+    public Person addInterest(Principal principal, @PathVariable Long iid, String kind,
                               HttpServletRequest request) {
+        String username = principal.getName();
         Person user = personRepository.findByUsername(username);
         Optional<Interest> interestBox = interestRepository.findById(iid);
         if (!interestBox.isPresent()) {
@@ -118,9 +169,9 @@ public class PersonController {
         return user;
     }
 
-    @RequestMapping(value = "/persons/{username}/interests", method = {RequestMethod.POST})
-    @PreAuthorize("#username.equals(authentication.principal)")
-    public Person addInterests(@PathVariable String username, @RequestBody List<String> interestNames) {
+    @RequestMapping(value = "/current_user/interests", method = {RequestMethod.POST})
+    public Person addInterests(Principal principal, @RequestBody List<String> interestNames) {
+        String username = principal.getName();
         Person user = personRepository.findByUsername(username);
         for(String interestName : interestNames) {
             Interest interest = interestRepository.findByName(interestName);
@@ -134,9 +185,9 @@ public class PersonController {
         return user;
     }
 
-    @RequestMapping(value = "/persons/{username}/majors", method = {RequestMethod.POST})
-    @PreAuthorize("#username.equals(authentication.principal)")
-    public Person addMajors(@PathVariable String username, @RequestBody List<String> majorNames) {
+    @RequestMapping(value = "/current_user/majors", method = {RequestMethod.POST})
+    public Person addMajors(Principal principal, @RequestBody List<String> majorNames) {
+        String username = principal.getName();
         Person user = personRepository.findByUsername(username);
         for(String majorName : majorNames) {
             Interest interest = interestRepository.findByName(majorName);
@@ -150,9 +201,9 @@ public class PersonController {
         return user;
     }
 
-    @RequestMapping(value = "/persons/{username}/minors", method = {RequestMethod.POST})
-    @PreAuthorize("#username.equals(authentication.principal)")
-    public Person addMinors(@PathVariable String username, @RequestBody List<String> minorNames) {
+    @RequestMapping(value = "/current_user/minors", method = {RequestMethod.POST})
+    public Person addMinors(Principal principal, @RequestBody List<String> minorNames) {
+        String username = principal.getName();
         Person user = personRepository.findByUsername(username);
         for(String minorName : minorNames) {
             Interest interest = interestRepository.findByName(minorName);
@@ -166,54 +217,54 @@ public class PersonController {
         return user;
     }
 
-    @PostMapping(value = "/persons/{username}/graduation_year/{graduationYear}")
-    @PreAuthorize("#username.equals(authentication.principal)")
-    public Person updateGraduationYear(@PathVariable String username, @PathVariable int graduationYear) {
+    @PostMapping(value = "/current_user/graduation_year/{graduationYear}")
+    public Person updateGraduationYear(Principal principal, @PathVariable int graduationYear) {
+        String username = principal.getName();
         Person person = personRepository.findByUsername(username);
         person.setGraduationYear(graduationYear);
         personRepository.save(person);
         return person;
     }
 
-    @PostMapping(value = "/persons/{username}/email/{email}")
-    @PreAuthorize("#username.equals(authentication.principal)")
-    public Person updateEmail(@PathVariable String username, @PathVariable String email) {
+    @PostMapping(value = "/current_user/email/{email}")
+    public Person updateEmail(Principal principal, @PathVariable String email) {
+        String username = principal.getName();
         Person person = personRepository.findByUsername(username);
         person.setEmail(email);
         personRepository.save(person);
         return person;
     }
 
-    @PostMapping(value = "/persons/{username}/name/{name}")
-    @PreAuthorize("#username.equals(authentication.principal)")
-    public Person updateName(@PathVariable String username, @PathVariable String name) {
+    @PostMapping(value = "/current_user/name/{name}")
+    public Person updateName(Principal principal, @PathVariable String name) {
+        String username = principal.getName();
         Person person = personRepository.findByUsername(username);
         person.setName(name);
         personRepository.save(person);
         return person;
     }
 
-    @PostMapping(value = "/persons/{username}/links")
-    @PreAuthorize("#username.equals(authentication.principal)")
-    public Person updateLinks(@PathVariable String username, @RequestBody String links) {
+    @PostMapping(value = "/current_user/links")
+    public Person updateLinks(Principal principal, @RequestBody String links) {
+        String username = principal.getName();
         Person person = personRepository.findByUsername(username);
         person.setExternalLinks(links);
         personRepository.save(person);
         return person;
     }
 
-    @PostMapping(value = "/persons/{username}/photo_path/{photoPath}")
-    @PreAuthorize("#username.equals(authentication.principal)")
-    public Person updatePhotoPath(@PathVariable String username, @PathVariable String photoPath) {
+    @PostMapping(value = "/current_user/photo_path/{photoPath}")
+    public Person updatePhotoPath(Principal principal, @PathVariable String photoPath) {
+        String username = principal.getName();
         Person person = personRepository.findByUsername(username);
         person.setPhotoPath(photoPath);
         personRepository.save(person);
         return person;
     }
 
-    @PostMapping(value = "/persons/{username}/password", consumes = "text/plain")
-    @PreAuthorize("#username.equals(authentication.principal)")
-    public Person updatePassword(@PathVariable String username, @RequestBody String password) {
+    @PostMapping(value = "/current_user/password", consumes = "text/plain")
+    public Person updatePassword(Principal principal, @RequestBody String password) {
+        String username = principal.getName();
         Person person = personRepository.findByUsername(username);
         String encryptedPassword = passwordEncoder.encode(password);
         person.setPassword(encryptedPassword);
