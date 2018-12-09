@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-dropdb oasys
-createdb oasys
-psql oasys -af db/create-tables.sql
-psql oasys -af db/loadcsv.sql
+dropdb -h 35.237.36.16 -U postgres oasys;
+createdb oasys -U postgres -h 35.237.36.16;
+psql oasys -af db/create-tables.sql -U postgres -h 35.237.36.16;
+psql oasys -af db/loadcsv.sql -U postgres -h 35.237.36.16;
