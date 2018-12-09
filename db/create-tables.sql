@@ -5,10 +5,11 @@ CREATE TABLE Person(
   name VARCHAR(64) NOT NULL,
   email VARCHAR(256) NOT NULL UNIQUE,
   graduation_year INTEGER,
-  photo_path VARCHAR(256),
+  photo_path VARCHAR(256) NOT NULL DEFAULT 'https://storage.googleapis.com/oasys-images/default.png',
   links JSON,
   username VARCHAR(256) NOT NULL UNIQUE,
-  password VARCHAR(256) NOT NULL
+  password VARCHAR(256) NOT NULL,
+  bio TEXT
 );
 
 CREATE TABLE Role(
@@ -31,7 +32,7 @@ CREATE TABLE Flock(
 
 CREATE TABLE Event(
   eid INTEGER NOT NULL PRIMARY KEY,
-  name VARCHAR(128) NOT NULL,
+  name VARCHAR(256) NOT NULL,
   date date NOT NULL,
   time TIMESTAMP NOT NULL,
   location VARCHAR(256),
@@ -56,19 +57,6 @@ CREATE TABLE Comment(
   timestamp TIMESTAMP NOT NULL DEFAULT NOW(),
   body TEXT NOT NULL,
   PRIMARY KEY(cid, pid)
-);
-
-CREATE TABLE Thread(
-  tid INTEGER NOT NULL PRIMARY KEY,
-  created_at TIMESTAMP NOT NULL DEFAULT NOW()
-);
-
-CREATE TABLE Message(
-  mid INTEGER NOT NULL,
-  tid INTEGER NOT NULL REFERENCES Thread(tid),
-  timestamp TIMESTAMP NOT NULL DEFAULT NOW(),
-  body TEXT NOT NULL,
-  PRIMARY KEY(mid, tid)
 );
 
 CREATE TABLE Interest(
@@ -100,7 +88,7 @@ CREATE TABLE Moderates(
 
 CREATE TABLE Studies(
   uid INTEGER NOT NULL REFERENCES Person(uid),
-  iid INTEGER NOT NULL REFERENCES Interest(iid), -- TODO: create assertion that checks for valid major/minor combinations?
+  iid INTEGER NOT NULL REFERENCES Interest(iid),
   kind VARCHAR(5) CHECK (kind IS NULL OR kind = 'major' OR kind = 'minor')
 );
 
@@ -108,12 +96,6 @@ CREATE TABLE Interested(
   uid INTEGER NOT NULL REFERENCES Person(uid),
   iid INTEGER NOT NULL REFERENCES Interest(iid),
   PRIMARY KEY(uid, iid)
-);
-
-CREATE TABLE Participates(
-  uid INTEGER NOT NULL REFERENCES Person(uid),
-  tid INTEGER NOT NULL REFERENCES Thread(tid),
-  PRIMARY KEY(uid, tid)
 );
 
 CREATE TABLE Tags(

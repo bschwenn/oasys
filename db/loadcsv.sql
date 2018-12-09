@@ -1,4 +1,4 @@
-\copy Person(uid, name, email, graduation_year, photo_path, links, username, password) FROM 'db/person.csv' DELIMITER ',' CSV;
+\copy Person(uid, name, email, graduation_year, photo_path, links, username, password) FROM 'db/person.csv' DELIMITER '1' CSV;
 
 \copy Flock(gid, name, photo_path) FROM 'db/flock.csv' DELIMITER ',' CSV;
 
