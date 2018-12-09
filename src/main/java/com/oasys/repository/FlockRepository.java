@@ -11,5 +11,5 @@ public interface FlockRepository extends PagingAndSortingRepository<Flock, Long>
     @Override
     Optional<Flock> findById(Long fid);
 
-    Flock findByName(String name);
+    Flock findByNameIgnoreCase(String name);
 }

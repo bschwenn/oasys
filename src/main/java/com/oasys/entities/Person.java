@@ -101,6 +101,9 @@ public class Person {
     @JsonIgnore
     private Set<StudyRecord> studyRecords;
 
+    @OneToMany(mappedBy = "creator", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Post> posts;
+
     public Person() { }
 
     public Long getUid() {

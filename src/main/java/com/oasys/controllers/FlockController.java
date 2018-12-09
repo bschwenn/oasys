@@ -109,7 +109,7 @@ public class FlockController {
 
     @RequestMapping("/flocks/name/{flockName}")
     public Flock getFlockByName(@PathVariable String flockName) {
-        Flock f = flockRepository.findByName(flockName);
+        Flock f = flockRepository.findByNameIgnoreCase(flockName);
         return f;
     }
 }

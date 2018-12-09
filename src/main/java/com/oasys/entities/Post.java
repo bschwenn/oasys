@@ -35,6 +35,14 @@ public class Post {
     @JsonIgnore
     private List<Comment> comments;
 
+    @ManyToOne
+    @JoinColumn(name = "creator_uid", referencedColumnName = "uid", updatable = false, insertable = false)
+    public Person creator;
+
+    public Person getCreator() {
+        return creator;
+    }
+
     public Long getPid() {
         return pid;
     }
