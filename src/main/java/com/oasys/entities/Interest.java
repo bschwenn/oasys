@@ -7,8 +7,9 @@ import java.util.Set;
 @Table(name = "interest")
 public class Interest {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "iid")
+    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="interest_iid_seq")
+    @SequenceGenerator(name="interest_iid_seq", sequenceName="interest_iid_seq", initialValue = 10000, allocationSize = 1)
+    @Column(name = "iid", updatable = false, nullable = false)
     private Long iid;
 
     @Column(name = "name", nullable = false)

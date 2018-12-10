@@ -10,8 +10,9 @@ import java.util.List;
 @Table(name = "post")
 public class Post {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "pid")
+    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="post_pid_seq")
+    @SequenceGenerator(name="post_pid_seq", sequenceName="post_pid_seq", initialValue = 10000, allocationSize = 1)
+    @Column(name = "pid", updatable = false, nullable = false)
     private Long pid;
 
     @Column(name = "gid", nullable = false)
@@ -39,8 +40,16 @@ public class Post {
     @JoinColumn(name = "creator_uid", referencedColumnName = "uid", updatable = false, insertable = false)
     public Person creator;
 
+    @ManyToOne
+    @JoinColumn(name = "gid", referencedColumnName = "gid", updatable = false, insertable = false)
+    public Flock flock;
+
     public Person getCreator() {
         return creator;
+    }
+
+    public Flock getFlock() {
+        return flock;
     }
 
     public Long getPid() {
@@ -96,7 +105,6 @@ public class Post {
         return comments;
     }
 
-    public void setComments(List<Comment> comments) {
-        this.comments = comments;
-    }
+    public void addComment(Comment comment) { comments.add(comment); }
+
 }

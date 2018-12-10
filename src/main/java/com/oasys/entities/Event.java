@@ -10,8 +10,9 @@ import java.util.List;
 @Table(name = "event")
 public class Event {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "eid")
+    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="event_eid_seq")
+    @SequenceGenerator(name="event_eid_seq", sequenceName="event_eid_seq", initialValue = 10000, allocationSize = 1)
+    @Column(name = "eid", updatable = false, nullable = false)
     private Long eid;
 
     @Column(name = "name", nullable = false)

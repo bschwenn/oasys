@@ -26,9 +26,9 @@ import java.util.stream.Collectors;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Person {
     @Id
-    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="PERSON_SEQ")
-    @SequenceGenerator(name="PERSON_SEQ", sequenceName="PERSON_SEQ", allocationSize=100)
-    @Column(name = "uid")
+    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="person_uid_seq")
+    @SequenceGenerator(name="person_uid_seq", sequenceName="person_uid_seq", initialValue = 10000, allocationSize = 1)
+    @Column(name = "uid", updatable = false, nullable = false)
     private Long uid;
 
     @Column(unique = true, nullable = false)
@@ -103,6 +103,9 @@ public class Person {
 
     @OneToMany(mappedBy = "creator", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Post> posts;
+
+    @OneToMany(mappedBy = "creator", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Comment> comments;
 
     public Person() { }
 

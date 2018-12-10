@@ -2,12 +2,10 @@ package com.oasys.controllers;
 
 import com.oasys.config.Constants;
 import com.oasys.entities.Flock;
+import com.oasys.entities.Interest;
 import com.oasys.entities.Person;
 import com.oasys.entities.Post;
-import com.oasys.repository.FlockRepository;
-import com.oasys.repository.MemberRecordRepository;
-import com.oasys.repository.PersonRepository;
-import com.oasys.repository.PostRepository;
+import com.oasys.repository.*;
 import com.oasys.service.GroupPermissionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -17,6 +15,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -32,6 +31,8 @@ public class FlockController {
     private PostRepository postRepository;
     @Autowired
     private GroupPermissionService groupPermissionService;
+    @Autowired
+    private InterestRepository interestRepository;
 
     @RequestMapping("/flocks/{fid}")
     public Flock getFlock(@PathVariable Long fid) {
@@ -50,8 +51,7 @@ public class FlockController {
                 SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString()
         );
         flock.setAdmins(new HashSet<>(Arrays.asList(user)));
-        flockRepository.save(flock);
-        return flock;
+        return flockRepository.save(flock);
     }
 
     @PostMapping("/flocks/{fid}/members/{username}")
@@ -111,5 +111,24 @@ public class FlockController {
     public Flock getFlockByName(@PathVariable String flockName) {
         Flock f = flockRepository.findByNameIgnoreCase(flockName);
         return f;
+    }
+
+    @RequestMapping(value = "/flocks/name/{flockName}/interests", method = {RequestMethod.POST})
+    public Flock addRelatedInterests(Principal principal, @PathVariable String flockName,
+                                     @RequestBody List<String> interestNames) {
+        Flock flock = flockRepository.findByNameIgnoreCase(flockName);
+        if (!groupPermissionService.isGroupAdmin(principal.getName(), flock.getGid())) {
+            return flock;
+        }
+        for(String interestName : interestNames) {
+            Interest interest = interestRepository.findByName(interestName);
+            if (interest == null) {
+                interest = new Interest(interestName, false);
+                interestRepository.save(interest);
+            }
+            flock.addRelatedInterest(interest);
+        }
+        flockRepository.save(flock);
+        return flock;
     }
 }

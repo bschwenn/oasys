@@ -9,7 +9,8 @@ import java.util.Set;
 @Table(name = "flock")
 public class Flock {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="flock_gid_seq")
+    @SequenceGenerator(name="flock_gid_seq", sequenceName="flock_gid_seq", allocationSize = 1)
     @Column(name = "gid")
     private Long gid;
 
@@ -18,6 +19,9 @@ public class Flock {
 
     @Column(name = "photo_path")
     private String photoPath;
+
+    @Column(name = "description")
+    private String description;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = {
             CascadeType.MERGE,
@@ -50,12 +54,11 @@ public class Flock {
     @JsonIgnore
     private Set<Interest> relatedInterests;
 
+    @OneToMany(mappedBy = "flock", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Post> posts;
+
     public Long getGid() {
         return gid;
-    }
-
-    public void setGid(Long gid) {
-        this.gid = gid;
     }
 
     public String getName() {
@@ -64,6 +67,10 @@ public class Flock {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     public String getPhotoPath() {
@@ -86,6 +93,8 @@ public class Flock {
     public void addMemberRecord(MemberRecord r) {
         memberRecords.add(r);
     }
+
+    public void addRelatedInterest(Interest i) { relatedInterests.add(i); }
 
     public void removeMemberRecord(MemberRecord r) {
         memberRecords.remove(r);
