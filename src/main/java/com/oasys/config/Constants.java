@@ -1,5 +1,5 @@
 package com.oasys.config;
 
 public class Constants {
-    public static final int PAGE_SIZE = 100;
+    public static final int PAGE_SIZE = 15;
 }

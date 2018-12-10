@@ -38,10 +38,9 @@ public class Flock {
     @JsonIgnore
     private Set<MemberRecord> memberRecords;
 
-    @ManyToMany(mappedBy = "followedFlocks")
+    @OneToMany(mappedBy = "flock", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
-    private Set<Person> followers;
-
+    private Set<FollowRecord> followerRecords;
     @ManyToMany(fetch = FetchType.LAZY, cascade = {
             CascadeType.MERGE,
             CascadeType.PERSIST
@@ -56,6 +55,9 @@ public class Flock {
 
     @OneToMany(mappedBy = "flock", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Post> posts;
+
+    @OneToMany(mappedBy = "flock", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Event> events;
 
     public Long getGid() {
         return gid;
@@ -93,6 +95,12 @@ public class Flock {
     public void addMemberRecord(MemberRecord r) {
         memberRecords.add(r);
     }
+
+    public void addFollowerRecord(FollowRecord r) {
+        followerRecords.add(r);
+    }
+
+    public void removeFollowerRecord(FollowRecord r) { followerRecords.remove(r); }
 
     public void addRelatedInterest(Interest i) { relatedInterests.add(i); }
 

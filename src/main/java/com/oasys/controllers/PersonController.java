@@ -3,10 +3,7 @@ package com.oasys.controllers;
 import com.oasys.entities.Flock;
 import com.oasys.entities.Interest;
 import com.oasys.entities.Person;
-import com.oasys.repository.FlockRepository;
-import com.oasys.repository.InterestRepository;
-import com.oasys.repository.PersonRepository;
-import com.oasys.repository.StudyRecordRepository;
+import com.oasys.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -27,6 +24,8 @@ public class PersonController {
     private InterestRepository interestRepository;
     @Autowired
     private StudyRecordRepository studyRecordRepository;
+    @Autowired
+    private FollowRecordRepository followRecordRepository;
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
@@ -100,19 +99,23 @@ public class PersonController {
         return user.getFollowedFlocks();
     }
 
-    @PostMapping("/current_user/follows/{fid}")
-    public Flock followFlock(Principal principal, @PathVariable Long fid) {
+    @RequestMapping(value = "/current_user/follows/{gid}", method = {RequestMethod.DELETE, RequestMethod.POST})
+    public Person followFlock(Principal principal, @PathVariable Long gid,
+                             HttpServletRequest request) {
         String username = principal.getName();
         Person user = personRepository.findByUsername(username);
-        Optional<Flock> flockBox = flockRepository.findById(fid);
-        if (flockBox.isPresent()) {
-            Flock flock = flockBox.get();
-            user.getFollowedFlocks().add(flock);
-            personRepository.save(user);
-            return flock;
-        } else {
-            return null; // TODO (BEN): error handling :)
+        Optional<Flock> flockBox = flockRepository.findById(gid);
+        if (!flockBox.isPresent()) {
+            return user;
         }
+        Flock flock = flockBox.get();
+        if (request.getMethod().equals("POST")) {
+            user.follow(flock, followRecordRepository);
+        } else { // DELETE
+            user.unfollow(flock, followRecordRepository);
+        }
+        personRepository.save(user);
+        return user;
     }
 
     @RequestMapping("/persons/{username}/admin_roles")
@@ -159,7 +162,7 @@ public class PersonController {
             }
         } else { // DELETE
             if (kind != null) {
-                user.removeStudy(interest);
+                user.removeStudy(interest, studyRecordRepository);
             } else {
                 user.removeInterest(interest);
             }

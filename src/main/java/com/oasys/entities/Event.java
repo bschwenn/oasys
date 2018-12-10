@@ -33,9 +33,16 @@ public class Event {
     @Column(name = "gid")
     private Long groupId;
 
+    @Column(name = "public")
+    private boolean isPublic;
+
     @ManyToOne
     @JoinColumn(name = "creator_uid", referencedColumnName = "uid", updatable = false, insertable = false)
     public Person creator;
+
+    @ManyToOne
+    @JoinColumn(name = "gid", referencedColumnName = "gid", updatable = false, insertable = false)
+    public Flock flock;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
@@ -111,8 +118,19 @@ public class Event {
         this.relatedInterests = relatedInterests;
     }
 
-    public Person getCreator() { return creator; }
+    public Person getCreator() {
+        return creator;
+    }
+
+    public boolean isPublic() {
+        return isPublic;
+    }
+
     public boolean isGroupEvent() {
         return groupId == null;
+    }
+
+    public Flock getFlock() {
+        return flock;
     }
 }

@@ -82,7 +82,7 @@ public class FlockController {
             return null; // Prob should redirect to some kind of unauthorized page
         } else {
             Flock flock = flockBox.get();
-            user.removeFlock(flock);
+            user.removeFlock(flock, memberRecordRepository);
             personRepository.save(user);
             return flock;
         }

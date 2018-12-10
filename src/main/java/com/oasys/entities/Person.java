@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.oasys.repository.FollowRecordRepository;
 import com.oasys.repository.MemberRecordRepository;
 import com.oasys.repository.StudyRecordRepository;
 import com.oasys.util.JacksonUtil;
@@ -69,17 +70,8 @@ public class Person {
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<MemberRecord> memberRecords;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {
-            CascadeType.MERGE,
-            CascadeType.PERSIST
-    })
-    @JoinTable(
-            name = "Follows",
-            joinColumns = @JoinColumn(name = "uid", referencedColumnName = "uid"),
-            inverseJoinColumns = @JoinColumn(name = "gid", referencedColumnName = "gid")
-    )
-    @JsonIgnore
-    private Set<Flock> followedFlocks;
+    @OneToMany(mappedBy = "follower", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<FollowRecord> followerRecords;
 
     @ManyToMany(mappedBy = "admins")
     @JsonIgnore
@@ -180,7 +172,7 @@ public class Person {
         flock.addMemberRecord(memberRecord);
     }
 
-    public void removeFlock(Flock flock) {
+    public void removeFlock(Flock flock, MemberRecordRepository repository) {
         MemberRecord toRemove = null;
         for (MemberRecord memberRecord : memberRecords) {
             if (memberRecord.getFlock().equals(flock)) {
@@ -190,21 +182,40 @@ public class Person {
         }
         if (toRemove != null) {
             memberRecords.remove(toRemove);
+            repository.delete(toRemove);
             flock.removeMemberRecord(toRemove);
+        }
+    }
+
+    public void follow(Flock flock, FollowRecordRepository repository) {
+        FollowRecord followRecord = new FollowRecord(this, flock);
+        repository.save(followRecord);
+        followerRecords.add(followRecord);
+        flock.addFollowerRecord(followRecord);
+    }
+
+    public void unfollow(Flock flock, FollowRecordRepository repository) {
+        FollowRecord toRemove = null;
+        for (FollowRecord followRecord : followerRecords) {
+            if (followRecord.getFlock().equals(flock)) {
+                toRemove = followRecord;
+                break;
+            }
+        }
+        if (toRemove != null) {
+            followerRecords.remove(toRemove);
+            repository.delete(toRemove);
+            flock.removeFollowerRecord(toRemove);
         }
     }
 
     @JsonIgnore
     public Set<Flock> getFollowedFlocks() {
-        return followedFlocks;
-    }
-
-    public void addFollowedFlock(Flock flock) {
-        followedFlocks.add(flock);
-    }
-
-    public void removeFollowedFlock(Flock flock) {
-        followedFlocks.remove(flock);
+        Set<Flock> followed = new HashSet<>();
+        for (FollowRecord r : followerRecords) {
+            followed.add(r.getFlock());
+        }
+        return followed;
     }
 
     @JsonIgnore
@@ -236,7 +247,7 @@ public class Person {
         interest.addStudyRecord(studyRecord);
     }
 
-    public void removeStudy(Interest interest) {
+    public void removeStudy(Interest interest, StudyRecordRepository repository) {
         StudyRecord toRemove = null;
         for (StudyRecord studyRecord : studyRecords) {
             if (studyRecord.getInterest().equals(interest)) {
@@ -246,6 +257,7 @@ public class Person {
         }
         if (toRemove != null) {
             memberRecords.remove(toRemove);
+            repository.delete(toRemove);
             interest.removeStudyRecord(toRemove);
         }
     }
