@@ -64,6 +64,8 @@ public class Post {
         return gid;
     }
 
+    public int getNumberOfComments() { return comments.size(); }
+
     public void setGid(Long gid) {
         this.gid = gid;
     }
