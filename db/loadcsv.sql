@@ -1,6 +1,6 @@
 \copy Person(uid, name, email, graduation_year, photo_path, links, username, password, bio) FROM 'db/person.csv' DELIMITER '|' CSV;
 
-\copy Flock(gid, name, photo_path) FROM 'db/flock.csv' DELIMITER ',' CSV;
+\copy Flock(gid, name, photo_path, description) FROM 'db/flock.csv' DELIMITER '|' CSV;
 
 \copy Post(pid, gid, creator_uid, timestamp, kind, body) FROM 'db/post.csv' DELIMITER ',' CSV;
 
@@ -19,3 +19,5 @@
 \copy Related(gid, iid) FROM 'db/related.csv' DELIMITER ',' CSV;
 
 \copy Moderates(uid, gid) FROM 'db/moderates.csv' DELIMITER ',' CSV;
+
+\copy Event(eid, name, date, time, location, creator_uid, summary,gid) FROM 'db/events.csv' DELIMITER ',' CSV;
