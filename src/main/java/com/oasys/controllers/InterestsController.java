@@ -1,16 +1,9 @@
 package com.oasys.controllers;
 
-import com.oasys.config.Constants;
-import com.oasys.entities.Event;
 import com.oasys.entities.Interest;
-import com.oasys.entities.Post;
-import com.oasys.repository.EventRepository;
 import com.oasys.repository.InterestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.persistence.EntityManager;
@@ -18,7 +11,6 @@ import javax.persistence.TypedQuery;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
