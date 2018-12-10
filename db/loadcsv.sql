@@ -20,4 +20,4 @@
 
 \copy Moderates(uid, gid) FROM 'db/moderates.csv' DELIMITER ',' CSV;
 
-\copy Event(eid, name, date, time, location, creator_uid, summary,gid) FROM 'db/events.csv' DELIMITER ',' CSV;
+\copy Event(eid, name, time, location, creator_uid, summary, gid) FROM 'db/events.csv' DELIMITER ',' CSV;

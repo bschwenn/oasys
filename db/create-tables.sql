@@ -34,7 +34,6 @@ CREATE TABLE Flock(
 CREATE TABLE Event(
   eid SERIAL NOT NULL PRIMARY KEY,
   name VARCHAR(256) NOT NULL,
-  date date NOT NULL,
   time TIMESTAMP NOT NULL,
   location VARCHAR(256),
   creator_uid INTEGER NOT NULL REFERENCES Person(uid), -- Admin if group event
