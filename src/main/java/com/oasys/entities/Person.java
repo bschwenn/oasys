@@ -105,6 +105,9 @@ public class Person {
     private Set<Post> posts;
 
     @OneToMany(mappedBy = "creator", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Event> createdEvents;
+
+    @OneToMany(mappedBy = "creator", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Comment> comments;
 
     public Person() { }

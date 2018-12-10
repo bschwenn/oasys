@@ -27,11 +27,15 @@ public class Event {
     @Column(name = "creator_uid", nullable = false)
     private Long creatorUid;
 
-    @Column(name = "body")
+    @Column(name = "summary")
     private String summary;
 
     @Column(name = "gid")
     private Long groupId;
+
+    @ManyToOne
+    @JoinColumn(name = "creator_uid", referencedColumnName = "uid", updatable = false, insertable = false)
+    public Person creator;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
@@ -107,6 +111,7 @@ public class Event {
         this.relatedInterests = relatedInterests;
     }
 
+    public Person getCreator() { return creator; }
     public boolean isGroupEvent() {
         return groupId == null;
     }

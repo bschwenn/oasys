@@ -49,8 +49,8 @@ public class EventController {
                         "SELECT e " +
                                 "FROM Event e, MemberRecord m " +
                                 "WHERE m.member.uid = %s " +
-                                "AND e.gid = m.flock.gid " +
-                                "ORDER BY e.timestamp DESC",
+                                "AND e.groupId = m.flock.gid " +
+                                "ORDER BY e.time DESC",
                         user.getUid()
                 ),
                 Event.class
