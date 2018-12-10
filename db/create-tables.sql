@@ -38,7 +38,8 @@ CREATE TABLE Event(
   location VARCHAR(256),
   creator_uid INTEGER NOT NULL REFERENCES Person(uid), -- Admin if group event
   summary TEXT,
-  gid INTEGER -- If set, is associated with a group
+  gid INTEGER, -- If set, is associated with a group
+  public BOOLEAN NOT NULL DEFAULT TRUE
 );
 
 CREATE TABLE Post(
