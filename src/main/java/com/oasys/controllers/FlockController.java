@@ -1,10 +1,7 @@
 package com.oasys.controllers;
 
 import com.oasys.config.Constants;
-import com.oasys.entities.Flock;
-import com.oasys.entities.Interest;
-import com.oasys.entities.Person;
-import com.oasys.entities.Post;
+import com.oasys.entities.*;
 import com.oasys.repository.*;
 import com.oasys.service.GroupPermissionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,22 +86,36 @@ public class FlockController {
     }
 
     @RequestMapping("/flocks/{fid}/feed/{page}")
-    @PreAuthorize("@groupPermissionEvaluator.isInGroup(authentication.principal.toString(), #fid)")
-    public List<Post> getFlockPosts(@PathVariable long fid, @PathVariable int page) {
+    public List<Post> getFlockPosts(@PathVariable long fid, @PathVariable int page, Principal principal) {
         Pageable pageRequest = PageRequest.of(page, Constants.PAGE_SIZE, Sort.Direction.DESC, "timestamp");
-        return postRepository.findAll(pageRequest).stream().collect(Collectors.toList());
-    }
-
-    @RequestMapping("/flocks/{fid}/public_feed/{page}")
-    public List<Post> getFlockPublicPosts(@PathVariable long fid, @PathVariable int page) {
-        Pageable pageRequest = PageRequest.of(page, Constants.PAGE_SIZE, Sort.Direction.DESC, "timestamp");
-        return postRepository.getPublicFeed(fid, pageRequest).stream().collect(Collectors.toList());
+        if (principal != null && groupPermissionService.isInGroup(principal.getName(), fid)) {
+            return postRepository.findAll(pageRequest).stream().collect(Collectors.toList());
+        } else {
+            return postRepository.getPublicFeed(fid, pageRequest).stream().collect(Collectors.toList());
+        }
     }
 
     @RequestMapping("/flocks/{fid}/admins")
     public Set<Person> getFlockAdmins(@PathVariable long fid) {
         Optional<Flock> flockBox = flockRepository.findById(fid);
         return flockBox.isPresent() ? flockBox.get().getAdmins() : new HashSet<>();
+    }
+
+    @RequestMapping("/flocks/{fid}/requests")
+    public Set<Person> getMemberRequests(@PathVariable long fid) {
+        Optional<Flock> flockBox = flockRepository.findById(fid);
+        if(!flockBox.isPresent())
+            return new HashSet<>();
+
+        Set<MemberRequest> requests = flockBox.get().getMemberRequests();
+
+        Set<Person> requesters = new HashSet<>();
+
+        for(MemberRequest r : requests) {
+            requesters.add(r.getMember());
+        }
+
+        return requesters;
     }
 
     @RequestMapping("/flocks/name/{flockName}")

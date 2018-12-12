@@ -40,7 +40,12 @@ public class Flock {
 
     @OneToMany(mappedBy = "flock", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
+    private Set<MemberRequest> memberRequests;
+
+    @OneToMany(mappedBy = "flock", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private Set<FollowRecord> followerRecords;
+
     @ManyToMany(fetch = FetchType.LAZY, cascade = {
             CascadeType.MERGE,
             CascadeType.PERSIST
@@ -106,6 +111,10 @@ public class Flock {
 
     public void removeMemberRecord(MemberRecord r) {
         memberRecords.remove(r);
+    }
+
+    public Set<MemberRequest> getMemberRequests() {
+        return memberRequests;
     }
 
     @Override
