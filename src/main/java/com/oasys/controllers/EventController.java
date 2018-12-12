@@ -6,12 +6,14 @@ import com.oasys.entities.Person;
 import com.oasys.entities.Post;
 import com.oasys.repository.EventRepository;
 import com.oasys.repository.PersonRepository;
+import com.oasys.service.GroupPermissionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,6 +25,8 @@ public class EventController {
     private PersonRepository personRepository;
     @Autowired
     private EntityManager em;
+    @Autowired
+    private GroupPermissionService groupPermissionService;
 
     @GetMapping("/event/{eid}")
     public Event getEvent(@PathVariable Long eid) {
@@ -58,5 +62,19 @@ public class EventController {
         eventQuery.setFirstResult(page * Constants.PAGE_SIZE);
         eventQuery.setMaxResults(Constants.PAGE_SIZE);
         return eventQuery.getResultList();
+    }
+
+    @GetMapping("/search/events/{name}")
+    public List<Event> searchByName(@PathVariable String name, Principal principal) {
+        List<Event> eventList = eventRepository.findByNameContainingIgnoreCase(name);
+
+        List<Event> results = new ArrayList<>();
+        for (Event e : eventList) {
+            if (groupPermissionService.isInGroup(principal.getName(), e.getGroupId()) || e.isPublic()) {
+                results.add(e);
+            }
+        }
+
+        return results;
     }
 }

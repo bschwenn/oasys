@@ -273,4 +273,10 @@ public class PersonController {
         personRepository.save(person);
         return person;
     }
+
+    @GetMapping("/search/people/{name}")
+    public List<Person> searchByName(@PathVariable String name) {
+        List<Person> l = personRepository.findByNameContainingIgnoreCase(name);
+        return l;
+    }
 }

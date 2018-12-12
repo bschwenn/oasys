@@ -27,9 +27,14 @@ public class PostController {
     private CommentRepository commentRepository;
 
     @GetMapping("/posts/{pid}")
-    public Post getPost(@PathVariable Long pid) {
+    public Post getPost(@PathVariable Long pid, Principal principal) {
         Optional<Post> postBox = postRepository.findById(pid);
+        String username = principal.getName();
         if (postBox.isPresent()) {
+            Post post = postBox.get();
+            if (!groupPermissionService.isInGroup(username, post.getGid())) {
+                return null;
+            }
             return postBox.get();
         } else {
             return null;

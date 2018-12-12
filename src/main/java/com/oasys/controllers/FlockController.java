@@ -131,4 +131,10 @@ public class FlockController {
         flockRepository.save(flock);
         return flock;
     }
+
+    @GetMapping("/search/flocks/{name}")
+    public List<Flock> searchByName(@PathVariable String name) {
+        List<Flock> f = flockRepository.findByNameContainingIgnoreCase(name);
+        return f;
+    }
 }
