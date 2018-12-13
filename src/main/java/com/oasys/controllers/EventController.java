@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
+import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -81,8 +82,9 @@ public class EventController {
         return results;
     }
 
-    @PostMapping("/current_user/going/{eid}")
-    public Event addGoing(Principal principal, @PathVariable Long eid) {
+    @RequestMapping(value = "/current_user/going/{eid}", method = {RequestMethod.DELETE, RequestMethod.POST})
+    public Event modifyRsvp(Principal principal, @PathVariable Long eid,
+                            HttpServletRequest request) {
         if (principal == null) return null;
         Optional<Event> eventBox = eventRepository.findById(eid);
         if (!eventBox.isPresent()) {
@@ -91,8 +93,11 @@ public class EventController {
 
         Person user = personRepository.findByUsername(principal.getName());
         Event event = eventBox.get();
-
-        user.addGoing(event, goingRecordRepository);
+        if (request.getMethod().equals("POST")) {
+            user.addGoing(event, goingRecordRepository);
+        } else {
+            user.removeGoing(event, goingRecordRepository);
+        }
         return event;
     }
 
