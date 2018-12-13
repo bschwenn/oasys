@@ -136,11 +136,17 @@ public class FlockController {
     @RequestMapping(value = "/flocks/{gid}/requests/{uid}", method = {RequestMethod.POST, RequestMethod.DELETE})
     public Flock modifyMemberRequest(@PathVariable long uid, @PathVariable long gid,
                                      HttpServletRequest request, Principal principal) {
-        Optional<Person> userBox = personRepository.findById(uid);
+        Person user;
+        if (uid == 0) {
+            user = personRepository.findByUsername(principal.getName());
+        } else {
+            Optional<Person> userBox = personRepository.findById(uid);
+            if (!userBox.isPresent()) return null;
+            user = userBox.get();
+        }
         Optional<Flock> flockBox = flockRepository.findById(gid);
 
-        if (!userBox.isPresent() || !flockBox.isPresent() || principal == null) return null;
-        Person user = userBox.get();
+        if (!flockBox.isPresent() || principal == null) return null;
         Flock flock = flockBox.get();
 
         if (request.getMethod().equals("POST")) {
