@@ -101,7 +101,7 @@ public class EventController {
         return event;
     }
 
-    @GetMapping("/events/going_list")
+    @GetMapping("/events/going_list/{eid}")
     public Set<Person> getGoingList(@PathVariable Long eid) {
         Optional<Event> eventBox = eventRepository.findById(eid);
         if (!eventBox.isPresent()) {
