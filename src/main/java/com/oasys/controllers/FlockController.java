@@ -89,7 +89,7 @@ public class FlockController {
     public List<Post> getFlockPosts(@PathVariable long fid, @PathVariable int page, Principal principal) {
         Pageable pageRequest = PageRequest.of(page, Constants.PAGE_SIZE, Sort.Direction.DESC, "timestamp");
         if (principal != null && groupPermissionService.isInGroup(principal.getName(), fid)) {
-            return postRepository.findAll(pageRequest).stream().collect(Collectors.toList());
+            return postRepository.findByGid(fid, pageRequest).stream().collect(Collectors.toList());
         } else {
             return postRepository.getPublicFeed(fid, pageRequest).stream().collect(Collectors.toList());
         }

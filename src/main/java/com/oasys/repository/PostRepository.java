@@ -13,4 +13,6 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 public interface PostRepository extends PagingAndSortingRepository<Post, Long> {
     @Query("SELECT p FROM Post p WHERE p.gid = :gid AND p.kind = 'public' ORDER BY p.timestamp DESC")
     Page<Post> getPublicFeed(@Param("gid") long gid, Pageable pageRequest);
+
+    Page<Post> findByGid(long gid, Pageable pageRequest);
 }

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -37,6 +38,7 @@ public class PersonController {
     @RequestMapping("/current_user")
     @ResponseBody
     public Person getPerson(Principal principal) {
+        if (principal == null) return null;
         String username = principal.getName();
         return personRepository.findByUsername(username);
     }
@@ -57,6 +59,7 @@ public class PersonController {
     @RequestMapping("/current_user/majors")
     @ResponseBody
     public Set<Interest> getMajors(Principal principal) {
+        if (principal == null) return new HashSet<>();
         String username = principal.getName();
         return personRepository.findByUsername(username).getMajors();
     }
@@ -69,6 +72,7 @@ public class PersonController {
     @RequestMapping("/current_user/minors")
     @ResponseBody
     public Set<Interest> getMinors(Principal principal) {
+        if (principal == null) return new HashSet<>();
         String username = principal.getName();
         return personRepository.findByUsername(username).getMinors();
     }
@@ -81,6 +85,7 @@ public class PersonController {
 
     @RequestMapping("/current_user/flocks")
     public Set<Flock> getPersonFlocks(Principal principal) {
+        if (principal == null) return new HashSet<>();
         String username = principal.getName();
         Person user = personRepository.findByUsername(username);
         return user.getFlocks();
@@ -94,6 +99,7 @@ public class PersonController {
 
     @RequestMapping("/current_user/follows")
     public Set<Flock> getPersonFollows(Principal principal) {
+        if (principal == null) return new HashSet<>();
         String username = principal.getName();
         Person user = personRepository.findByUsername(username);
         return user.getFollowedFlocks();
@@ -102,6 +108,7 @@ public class PersonController {
     @RequestMapping(value = "/current_user/follows/{gid}", method = {RequestMethod.DELETE, RequestMethod.POST})
     public Person followFlock(Principal principal, @PathVariable Long gid,
                              HttpServletRequest request) {
+        if (principal == null) return null;
         String username = principal.getName();
         Person user = personRepository.findByUsername(username);
         Optional<Flock> flockBox = flockRepository.findById(gid);
@@ -126,6 +133,7 @@ public class PersonController {
 
     @RequestMapping("/current_user/admin_roles")
     public Set<Flock> getAdministratedFlocks(Principal principal) {
+        if (principal == null) return new HashSet<>();
         String username = principal.getName();
         Person user = personRepository.findByUsername(username);
         return user.getAdminForFlocks();
@@ -139,6 +147,7 @@ public class PersonController {
 
     @RequestMapping("/current_user/interests")
     public Set<Interest> getPersonInterests(Principal principal) {
+        if (principal == null) return new HashSet<>();
         String username = principal.getName();
         Person user = personRepository.findByUsername(username);
         return user.getInterests();
@@ -147,6 +156,7 @@ public class PersonController {
     @RequestMapping(value = "/current_user/interests/{iid}", method = {RequestMethod.DELETE, RequestMethod.POST})
     public Person addInterest(Principal principal, @PathVariable Long iid, String kind,
                               HttpServletRequest request) {
+        if (principal == null) return null;
         String username = principal.getName();
         Person user = personRepository.findByUsername(username);
         Optional<Interest> interestBox = interestRepository.findById(iid);
@@ -173,6 +183,7 @@ public class PersonController {
 
     @RequestMapping(value = "/current_user/interests", method = {RequestMethod.POST})
     public Person addInterests(Principal principal, @RequestBody List<String> interestNames) {
+        if (principal == null) return null;
         String username = principal.getName();
         Person user = personRepository.findByUsername(username);
         for(String interestName : interestNames) {
@@ -189,6 +200,7 @@ public class PersonController {
 
     @RequestMapping(value = "/current_user/majors", method = {RequestMethod.POST})
     public Person addMajors(Principal principal, @RequestBody List<String> majorNames) {
+        if (principal == null) return null;
         String username = principal.getName();
         Person user = personRepository.findByUsername(username);
         for(String majorName : majorNames) {
@@ -205,6 +217,7 @@ public class PersonController {
 
     @RequestMapping(value = "/current_user/minors", method = {RequestMethod.POST})
     public Person addMinors(Principal principal, @RequestBody List<String> minorNames) {
+        if (principal == null) return null;
         String username = principal.getName();
         Person user = personRepository.findByUsername(username);
         for(String minorName : minorNames) {
@@ -221,6 +234,7 @@ public class PersonController {
 
     @PostMapping(value = "/current_user/graduation_year/{graduationYear}")
     public Person updateGraduationYear(Principal principal, @PathVariable int graduationYear) {
+        if (principal == null) return null;
         String username = principal.getName();
         Person person = personRepository.findByUsername(username);
         person.setGraduationYear(graduationYear);
@@ -230,6 +244,7 @@ public class PersonController {
 
     @PostMapping(value = "/current_user/email/{email}")
     public Person updateEmail(Principal principal, @PathVariable String email) {
+        if (principal == null) return null;
         String username = principal.getName();
         Person person = personRepository.findByUsername(username);
         person.setEmail(email);
@@ -239,6 +254,7 @@ public class PersonController {
 
     @PostMapping(value = "/current_user/name/{name}")
     public Person updateName(Principal principal, @PathVariable String name) {
+        if (principal == null) return null;
         String username = principal.getName();
         Person person = personRepository.findByUsername(username);
         person.setName(name);
@@ -248,6 +264,7 @@ public class PersonController {
 
     @PostMapping(value = "/current_user/links")
     public Person updateLinks(Principal principal, @RequestBody String links) {
+        if (principal == null) return null;
         String username = principal.getName();
         Person person = personRepository.findByUsername(username);
         person.setExternalLinks(links);
@@ -257,6 +274,7 @@ public class PersonController {
 
     @PostMapping(value = "/current_user/photo_path/{photoPath}")
     public Person updatePhotoPath(Principal principal, @PathVariable String photoPath) {
+        if (principal == null) return null;
         String username = principal.getName();
         Person person = personRepository.findByUsername(username);
         person.setPhotoPath(photoPath);
@@ -266,6 +284,7 @@ public class PersonController {
 
     @PostMapping(value = "/current_user/password", consumes = "text/plain")
     public Person updatePassword(Principal principal, @RequestBody String password) {
+        if (principal == null) return null;
         String username = principal.getName();
         Person person = personRepository.findByUsername(username);
         String encryptedPassword = passwordEncoder.encode(password);
