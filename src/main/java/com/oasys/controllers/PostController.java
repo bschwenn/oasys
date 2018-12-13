@@ -1,19 +1,14 @@
 package com.oasys.controllers;
 
-import com.oasys.entities.Comment;
-import com.oasys.entities.Person;
-import com.oasys.entities.Post;
-import com.oasys.repository.CommentRepository;
-import com.oasys.repository.PersonRepository;
-import com.oasys.repository.PostRepository;
+import com.oasys.entities.*;
+import com.oasys.repository.*;
 import com.oasys.service.GroupPermissionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 public class PostController {
@@ -25,6 +20,10 @@ public class PostController {
     private PersonRepository personRepository;
     @Autowired
     private CommentRepository commentRepository;
+    @Autowired
+    private PinRecordRepository pinRecordRepository;
+    @Autowired
+    private LikeRecordRepository likeRecordRepository;
 
     @GetMapping("/posts/{pid}")
     public Post getPost(@PathVariable Long pid, Principal principal) {
@@ -81,5 +80,57 @@ public class PostController {
         } else {
             return new ArrayList<>();
         }
+    }
+
+    @PostMapping("/current_user/pin/{pid}")
+    public Post pinPost(Principal principal, @PathVariable Long pid) {
+        if (principal == null) return null;
+        Optional<Post> postBox = postRepository.findById(pid);
+        if (!postBox.isPresent()) {
+            return null;
+        }
+
+        Person user = personRepository.findByUsername(principal.getName());
+        Post post = postBox.get();
+
+        user.pin(post, pinRecordRepository);
+        return post;
+    }
+
+    @PostMapping("/current_user/like/{pid}")
+    public Post likePost(Principal principal, @PathVariable Long pid) {
+        if (principal == null) return null;
+        Optional<Post> postBox = postRepository.findById(pid);
+        if (!postBox.isPresent()) {
+            return null;
+        }
+
+        Person user = personRepository.findByUsername(principal.getName());
+        Post post = postBox.get();
+
+        user.like(post, likeRecordRepository);
+        return post;
+    }
+
+    @GetMapping("/posts/{pid}/likers")
+    public Set<Person> getLikers(@PathVariable Long pid) {
+        Optional<Post> postBox = postRepository.findById(pid);
+        if (!postBox.isPresent()) {
+            return new HashSet<>();
+        }
+
+        Post post = postBox.get();
+        return post.getLikeRecords().stream().map(LikeRecord::getPerson).collect(Collectors.toSet());
+    }
+
+    @GetMapping("/posts/{pid}/pinners")
+    public Set<Person> getPinners(@PathVariable Long pid) {
+        Optional<Post> postBox = postRepository.findById(pid);
+        if (!postBox.isPresent()) {
+            return new HashSet<>();
+        }
+
+        Post post = postBox.get();
+        return post.getPinRecords().stream().map(PinRecord::getPerson).collect(Collectors.toSet());
     }
 }

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "event")
@@ -43,6 +44,10 @@ public class Event {
     @ManyToOne
     @JoinColumn(name = "gid", referencedColumnName = "gid", updatable = false, insertable = false)
     public Flock flock;
+
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private Set<GoingRecord> goingRecords;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
@@ -132,5 +137,22 @@ public class Event {
 
     public Flock getFlock() {
         return flock;
+    }
+
+    @JsonIgnore
+    public Set<GoingRecord> getGoingRecords() {
+        return goingRecords;
+    }
+
+    public void addGoingRecord(GoingRecord record) {
+        goingRecords.add(record);
+    }
+
+    public void removeGoingRecord(GoingRecord toRemove) {
+        goingRecords.remove(toRemove);
+    }
+
+    public int getNumberGoing() {
+        return goingRecords.size();
     }
 }

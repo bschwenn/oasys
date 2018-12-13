@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.BitSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "post")
@@ -43,6 +45,14 @@ public class Post {
     @ManyToOne
     @JoinColumn(name = "gid", referencedColumnName = "gid", updatable = false, insertable = false)
     public Flock flock;
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private Set<LikeRecord> likeRecords;
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private Set<PinRecord> pinRecords;
 
     public Person getCreator() {
         return creator;
@@ -109,4 +119,38 @@ public class Post {
 
     public void addComment(Comment comment) { comments.add(comment); }
 
+    public void removeLike(LikeRecord toRemove) {
+        likeRecords.remove(toRemove);
+    }
+
+    public void addPinRecord(PinRecord record) {
+        pinRecords.add(record);
+    }
+
+    public void addLikeRecord(LikeRecord record) {
+        likeRecords.remove(record);
+    }
+
+    public void removePinRecord(PinRecord toRemove) {
+        pinRecords.remove(toRemove);
+    }
+
+
+    public int getNumberOfLikes() {
+        return likeRecords.size();
+    }
+
+    public int getNumberOfPins() {
+        return pinRecords.size();
+    }
+
+    @JsonIgnore
+    public Set<LikeRecord> getLikeRecords() {
+        return likeRecords;
+    }
+
+    @JsonIgnore
+    public Set<PinRecord> getPinRecords() {
+        return pinRecords;
+    }
 }

@@ -2,9 +2,11 @@ package com.oasys.controllers;
 
 import com.oasys.config.Constants;
 import com.oasys.entities.Event;
+import com.oasys.entities.GoingRecord;
 import com.oasys.entities.Person;
 import com.oasys.entities.Post;
 import com.oasys.repository.EventRepository;
+import com.oasys.repository.GoingRecordRepository;
 import com.oasys.repository.PersonRepository;
 import com.oasys.service.GroupPermissionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +15,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 public class EventController {
@@ -27,6 +28,8 @@ public class EventController {
     private EntityManager em;
     @Autowired
     private GroupPermissionService groupPermissionService;
+    @Autowired
+    private GoingRecordRepository goingRecordRepository;
 
     @GetMapping("/event/{eid}")
     public Event getEvent(@PathVariable Long eid) {
@@ -76,5 +79,31 @@ public class EventController {
         }
 
         return results;
+    }
+
+    @PostMapping("/current_user/going/{eid}")
+    public Event addGoing(Principal principal, @PathVariable Long eid) {
+        if (principal == null) return null;
+        Optional<Event> eventBox = eventRepository.findById(eid);
+        if (!eventBox.isPresent()) {
+            return null;
+        }
+
+        Person user = personRepository.findByUsername(principal.getName());
+        Event event = eventBox.get();
+
+        user.addGoing(event, goingRecordRepository);
+        return event;
+    }
+
+    @GetMapping("/events/going_list")
+    public Set<Person> getGoingList(@PathVariable Long eid) {
+        Optional<Event> eventBox = eventRepository.findById(eid);
+        if (!eventBox.isPresent()) {
+            return new HashSet<>();
+        }
+
+        Event event = eventBox.get();
+        return event.getGoingRecords().stream().map(GoingRecord::getPerson).collect(Collectors.toSet());
     }
 }

@@ -1,8 +1,6 @@
 package com.oasys.controllers;
 
-import com.oasys.entities.Flock;
-import com.oasys.entities.Interest;
-import com.oasys.entities.Person;
+import com.oasys.entities.*;
 import com.oasys.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -14,6 +12,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 public class PersonController {
@@ -153,6 +152,24 @@ public class PersonController {
         return user.getInterests();
     }
 
+    @RequestMapping("/current_user/pins")
+    public Set<Post> getPinnedPosts(Principal principal) {
+        if (principal == null) return new HashSet<>();
+
+        String username = principal.getName();
+        Person user = personRepository.findByUsername(username);
+        return user.getPinRecords().stream().map(PinRecord::getPost).collect(Collectors.toSet());
+    }
+
+    @RequestMapping("/current_user/events")
+    public Set<Event> getEventsGoingTo(Principal principal) {
+        if (principal == null) return new HashSet<>();
+
+        String username = principal.getName();
+        Person user = personRepository.findByUsername(username);
+        return user.getGoingRecords().stream().map(GoingRecord::getEvent).collect(Collectors.toSet());
+    }
+
     @RequestMapping(value = "/current_user/interests/{iid}", method = {RequestMethod.DELETE, RequestMethod.POST})
     public Person addInterest(Principal principal, @PathVariable Long iid, String kind,
                               HttpServletRequest request) {
@@ -174,6 +191,7 @@ public class PersonController {
             if (kind != null) {
                 user.removeStudy(interest, studyRecordRepository);
             } else {
+
                 user.removeInterest(interest);
             }
         }

@@ -4,9 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.oasys.repository.FollowRecordRepository;
-import com.oasys.repository.MemberRecordRepository;
-import com.oasys.repository.StudyRecordRepository;
+import com.oasys.repository.*;
 import com.oasys.util.JacksonUtil;
 import com.oasys.util.JsonNodeBinaryType;
 import org.hibernate.annotations.Type;
@@ -72,6 +70,15 @@ public class Person {
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<MemberRequest> memberRequests;
+
+    @OneToMany(mappedBy = "person", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<LikeRecord> likeRecords;
+
+    @OneToMany(mappedBy = "person", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<PinRecord> pinRecords;
+
+    @OneToMany(mappedBy = "person", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<GoingRecord> goingRecords;
 
     @OneToMany(mappedBy = "follower", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<FollowRecord> followerRecords;
@@ -295,6 +302,89 @@ public class Person {
 
     public Set<Flock> getAdminForFlocks() {
         return adminForFlocks;
+    }
+
+    @JsonIgnore
+    public Set<LikeRecord> getLikeRecords() {
+        return likeRecords;
+    }
+
+
+    public void like(Post post, LikeRecordRepository likeRecordRepository) {
+        LikeRecord record = new LikeRecord(this, post);
+        likeRecordRepository.save(record);
+        likeRecords.add(record);
+        post.addLikeRecord(record);
+    }
+
+    public void removeLike(Post post, LikeRecordRepository likeRecordRepository) {
+        LikeRecord toRemove = null;
+        for (LikeRecord likeRecord : likeRecords) {
+            if (likeRecord.getPost().equals(post)) {
+                toRemove = likeRecord;
+                break;
+            }
+        }
+        if (toRemove != null) {
+            memberRecords.remove(toRemove);
+            likeRecordRepository.delete(toRemove);
+            post.removeLike(toRemove);
+        }
+    }
+
+    public void pin(Post post, PinRecordRepository pinRecordRepository) {
+        PinRecord record = new PinRecord(this, post);
+        pinRecordRepository.save(record);
+        pinRecords.add(record);
+        post.addPinRecord(record);
+    }
+
+    public void removePin(Post post, PinRecordRepository pinRecordRepository) {
+        PinRecord toRemove = null;
+        for (PinRecord pinRecord : pinRecords) {
+            if (pinRecord.getPost().equals(post)) {
+                toRemove = pinRecord;
+                break;
+            }
+        }
+        if (toRemove != null) {
+            memberRecords.remove(toRemove);
+            pinRecordRepository.delete(toRemove);
+            post.removePinRecord(toRemove);
+        }
+    }
+
+    public void addGoing(Event event, GoingRecordRepository goingRecordRepository) {
+        GoingRecord record = new GoingRecord(this, event);
+        goingRecordRepository.save(record);
+        goingRecords.add(record);
+        event.addGoingRecord(record);
+    }
+
+    public void removeGoing(Event event, GoingRecordRepository goingRecordRepository) {
+        GoingRecord toRemove = null;
+        for (GoingRecord goingRecord : goingRecords) {
+            if (goingRecord.getEvent().equals(event)) {
+                toRemove = goingRecord;
+                break;
+            }
+        }
+        if (toRemove != null) {
+            goingRecords.remove(toRemove);
+            goingRecordRepository.delete(toRemove);
+            event.removeGoingRecord(toRemove);
+        }
+    }
+
+
+    @JsonIgnore
+    public Set<PinRecord> getPinRecords() {
+        return pinRecords;
+    }
+
+    @JsonIgnore
+    public Set<GoingRecord> getGoingRecords() {
+        return goingRecords;
     }
 
     @Override
