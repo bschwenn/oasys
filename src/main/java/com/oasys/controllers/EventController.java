@@ -82,6 +82,23 @@ public class EventController {
         return results;
     }
 
+    @GetMapping(value = "/current_user/goingBool/{eid}")
+    public Event goingBool(Principal principal, @PathVariable Long eid) {
+        Person user = personRepository.findByUsername(principal.getName());
+        Optional<Event> eventBox = eventRepository.findById(eid);
+        if (!eventBox.isPresent()) {
+            return null;
+        }
+
+        Event event = eventBox.get();
+        Set<Person> attendList = event.getGoingRecords().stream().map(GoingRecord::getPerson).collect(Collectors.toSet());
+        if (attendList.contains(user)){
+            return event;
+        }else {
+            return null;
+        }
+    }
+
     @RequestMapping(value = "/current_user/going/{eid}", method = {RequestMethod.DELETE, RequestMethod.POST})
     public Event modifyRsvp(Principal principal, @PathVariable Long eid,
                             HttpServletRequest request) {
@@ -101,7 +118,7 @@ public class EventController {
         return event;
     }
 
-    @GetMapping("/events/going_list")
+    @GetMapping("/events/going_list/{eid}")
     public Set<Person> getGoingList(@PathVariable Long eid) {
         Optional<Event> eventBox = eventRepository.findById(eid);
         if (!eventBox.isPresent()) {
