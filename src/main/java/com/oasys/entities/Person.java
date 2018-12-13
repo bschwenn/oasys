@@ -266,7 +266,7 @@ public class Person {
             }
         }
         if (toRemove != null) {
-            memberRecords.remove(toRemove);
+            studyRecords.remove(toRemove);
             repository.delete(toRemove);
             interest.removeStudyRecord(toRemove);
         }
@@ -308,7 +308,6 @@ public class Person {
     public Set<LikeRecord> getLikeRecords() {
         return likeRecords;
     }
-
 
     public void like(Post post, LikeRecordRepository likeRecordRepository) {
         LikeRecord record = new LikeRecord(this, post);
@@ -407,5 +406,13 @@ public class Person {
         result = 31 * result + name.hashCode();
         result = 31 * result + username.hashCode();
         return result;
+    }
+
+    public void addMemberRequest(MemberRequest memberRequest) {
+        memberRequests.add(memberRequest);
+    }
+
+    public void removeMemberRequest(MemberRequest toRemove) {
+        memberRequests.remove(toRemove);
     }
 }

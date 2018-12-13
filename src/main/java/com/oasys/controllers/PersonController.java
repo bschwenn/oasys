@@ -107,7 +107,8 @@ public class PersonController {
     @RequestMapping(value = "/current_user/follows/{gid}", method = {RequestMethod.DELETE, RequestMethod.POST})
     public Person followFlock(Principal principal, @PathVariable Long gid,
                              HttpServletRequest request) {
-        if (principal == null) return null;
+        if (principal == null)
+            return null;
         String username = principal.getName();
         Person user = personRepository.findByUsername(username);
         Optional<Flock> flockBox = flockRepository.findById(gid);

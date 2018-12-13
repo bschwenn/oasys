@@ -31,7 +31,7 @@ public class PostController {
         String username = principal.getName();
         if (postBox.isPresent()) {
             Post post = postBox.get();
-            if (!groupPermissionService.isInGroup(username, post.getGid())) {
+            if (post.getKind().equals("public") || !groupPermissionService.isInGroup(username, post.getGid())) {
                 return null;
             }
             return postBox.get();

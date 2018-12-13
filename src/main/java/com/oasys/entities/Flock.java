@@ -1,8 +1,11 @@
 package com.oasys.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.oasys.repository.MemberRecordRepository;
+import com.oasys.repository.MemberRequestRepository;
 
 import javax.persistence.*;
+import java.lang.reflect.Member;
 import java.util.Set;
 
 @Entity
@@ -115,6 +118,28 @@ public class Flock {
 
     public Set<MemberRequest> getMemberRequests() {
         return memberRequests;
+    }
+
+    public void addMemberRequest(Person user, long initiatorUid, MemberRequestRepository repository) {
+        MemberRequest memberRequest = new MemberRequest(user, this, initiatorUid);
+        repository.save(memberRequest);
+        memberRequests.add(memberRequest);
+        user.addMemberRequest(memberRequest);
+    }
+
+    public void removeMemberRequest(Person user, MemberRequestRepository repository) {
+        MemberRequest toRemove = null;
+        for (MemberRequest memberRequest : memberRequests) {
+            if (memberRequest.getMember().equals(user)) {
+                toRemove = memberRequest;
+                break;
+            }
+        }
+        if (toRemove != null) {
+            memberRequests.remove(toRemove);
+            repository.delete(toRemove);
+            user.removeMemberRequest(toRemove);
+        }
     }
 
     @Override

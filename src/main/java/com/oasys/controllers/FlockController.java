@@ -12,6 +12,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -30,6 +31,8 @@ public class FlockController {
     private GroupPermissionService groupPermissionService;
     @Autowired
     private InterestRepository interestRepository;
+    @Autowired
+    private MemberRequestRepository memberRequestRepository;
 
     @RequestMapping("/flocks/{fid}")
     public Flock getFlock(@PathVariable Long fid) {
@@ -51,16 +54,19 @@ public class FlockController {
         return flockRepository.save(flock);
     }
 
-    @PostMapping("/flocks/{fid}/members/{username}")
+    @PostMapping("/flocks/{fid}/members/{uid}")
     // Look out below for Object vs. String
     @PreAuthorize("@groupPermissionEvaluator.isGroupAdmin(authentication.principal.toString(), #fid)")
-    public Flock addPersonToFlock(@PathVariable String username, @PathVariable Long fid) {
-        Person user = personRepository.findByUsername(username);
+    public Flock addPersonToFlock(@PathVariable long uid, @PathVariable Long fid) {
+        Optional<Person> userBox = personRepository.findById(uid);
         Optional<Flock> flockBox = flockRepository.findById(fid);
+        if (!userBox.isPresent() || !flockBox.isPresent()) return null;
+        Person user = userBox.get();
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Person initiator = personRepository.findByUsername((String) principal);
         if (flockBox.isPresent()) {
             Flock flock = flockBox.get();
+            flock.removeMemberRequest(user, memberRequestRepository);
             user.addFlock(flock, initiator.getUid(), memberRecordRepository);
             personRepository.save(user);
             return flock;
@@ -101,6 +107,15 @@ public class FlockController {
         return flockBox.isPresent() ? flockBox.get().getAdmins() : new HashSet<>();
     }
 
+    @GetMapping("/is_admin/{fid}")
+    public Person currentIsAdmin(@PathVariable long fid, Principal principal) {
+        Optional<Flock> flockBox = flockRepository.findById(fid);
+        if (principal == null)
+            return null;
+        Person current = personRepository.findByUsername(principal.getName());
+        return flockBox.isPresent() && flockBox.get().getAdmins().contains(current) ? current : null;
+    }
+
     @RequestMapping("/flocks/{fid}/requests")
     public Set<Person> getMemberRequests(@PathVariable long fid) {
         Optional<Flock> flockBox = flockRepository.findById(fid);
@@ -116,6 +131,26 @@ public class FlockController {
         }
 
         return requesters;
+    }
+
+    @RequestMapping(value = "/flocks/{gid}/requests/{uid}", method = {RequestMethod.POST, RequestMethod.DELETE})
+    public Flock modifyMemberRequest(@PathVariable long uid, @PathVariable long gid,
+                                     HttpServletRequest request, Principal principal) {
+        Optional<Person> userBox = personRepository.findById(uid);
+        Optional<Flock> flockBox = flockRepository.findById(gid);
+
+        if (!userBox.isPresent() || !flockBox.isPresent() || principal == null) return null;
+        Person user = userBox.get();
+        Flock flock = flockBox.get();
+
+        if (request.getMethod().equals("POST")) {
+            flock.addMemberRequest(user, personRepository.findByUsername(principal.getName()).getUid(),
+                    memberRequestRepository);
+        } else {
+            flock.removeMemberRequest(user, memberRequestRepository);
+        }
+
+        return flock;
     }
 
     @RequestMapping("/flocks/name/{flockName}")

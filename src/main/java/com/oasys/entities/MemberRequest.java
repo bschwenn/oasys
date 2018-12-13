@@ -17,25 +17,17 @@ public class MemberRequest {
     @JoinColumn(name = "gid")
     private Flock flock;
 
-    @Column(name = "initiator_uid", nullable = false)
-    private Long initiatorUid;
-
     public MemberRequest() {}
 
     public MemberRequest(Person member, Flock flock, Long initiatorUid) {
         this.member = member;
         this.flock = flock;
-        this.initiatorUid = initiatorUid;
     }
 
     public Person getMember() { return member; }
 
     public Flock getFlock() {
         return flock;
-    }
-
-    public Long getInitiatorUid() {
-        return initiatorUid;
     }
 
     public void setFlock(Flock flock) {
@@ -50,15 +42,13 @@ public class MemberRequest {
         MemberRequest that = (MemberRequest) o;
 
         if (!member.equals(that.member)) return false;
-        if (!flock.equals(that.flock)) return false;
-        return initiatorUid.equals(that.initiatorUid);
+        return flock.equals(that.flock);
     }
 
     @Override
     public int hashCode() {
         int result = member.hashCode();
         result = 31 * result + flock.hashCode();
-        result = 31 * result + initiatorUid.hashCode();
         return result;
     }
 }
