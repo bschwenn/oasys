@@ -81,6 +81,12 @@ CREATE TABLE Member(
   PRIMARY KEY(uid, gid)
 );
 
+CREATE TABLE MemberRequest(
+  uid INTEGER NOT NULL REFERENCES Person(uid),
+  gid INTEGER NOT NULL REFERENCES Flock(gid),
+  PRIMARY KEY(uid, gid)
+);
+
 CREATE TABLE Moderates(
   uid INTEGER NOT NULL REFERENCES Person(uid),
   gid INTEGER NOT NULL REFERENCES Flock(gid),
@@ -109,6 +115,18 @@ CREATE TABLE Related(
   gid INTEGER NOT NULL REFERENCES Flock(gid),
   iid INTEGER NOT NULL REFERENCES Interest(iid),
   PRIMARY KEY (gid, iid)
+);
+
+CREATE TABLE Likes(
+  uid INTEGER NOT NULL REFERENCES Person(uid),
+  pid INTEGER NOT NULL REFERENCES Post(pid),
+  PRIMARY KEY (uid, pid)
+);
+
+CREATE TABLE Going(
+  uid INTEGER NOT NULL REFERENCES Person(uid),
+  eid INTEGER NOT NULL REFERENCES Event(eid),
+  PRIMARY KEY(uid, eid)
 );
 
 -- This should probably work to check whether or not a tuple is a valid major/minor
